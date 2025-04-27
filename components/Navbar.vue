@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full flex items-center px-32 py-5 justify-between mb-2">
-    <img src="@/assets/myLogo.webp" alt="Logo Perusahaan" class="w-10 h-10" />
+    <img src="@/assets/Logogsu.png" alt="Logo Perusahaan" class="w-10 h-10" />
     <ul class="flex flex-wrap gap-5 *:underline">
       <li>
         <nuxt-link to="/">Home</nuxt-link>

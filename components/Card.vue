@@ -1,45 +1,105 @@
 <script setup lang="ts">
 import bidan from "@/assets/bidan.png";
-import trapis from "@/assets/trapis.png";
+import trapis from "@/assets/bidan.png";
 import kandungan from "@/assets/kandungan.png";
 
 const data = ref([
   {
     title: "Bidan",
-    description: "Description 1",
+    description: [
+      "Imunisasi Bayi (HB-0, DPT, IPV, POLIO, PCV, Campak)",
+      "Imunisasi Tetanus, Periksa Hamil (ANC)",
+      "Periksa Kesehatan, Pengobatan Ibu dan Anak , Periksa darah (Gula, Kolesterol, Asam Urat, GDS)",
+      "Periksa darah ibu hamil (HIV, SIFILIS, HBSHG / SIFILIS)",
+      "Suntik KB (1 bulan & 3 bulan)",
+      "Pasang IUD",
+      "Cukur Bayi",
+      "Tindik Bayi",
+      "Sunat Bayi Perempuan",
+      "Suntik Vitamin C Collagen",
+      "Infus Vitamin",
+      "Ganti perban / luka jahitan",
+      "Uap Nebulizer",
+    ],
     image: bidan,
-    available: "Senin - Jumat",
+    day: "Senin - Minggu",
+    time: "08.00 - 20.00",
+    time2: "Persalinan 24 Jam",
   },
   {
     title: "Trapis",
-    description: "Description 2",
+    description: [
+      "Pijat Laktasi",
+      "Pijat Nifas (Pijat Setelah Lahiran)",
+      "Pijat Ibu Hamil",
+      "Totok Punggung",
+      "Harashiatsu",
+      "Bekam",
+      "Fasdhu",
+      "Pijat Bayi (di bawah 1 tahun)",
+      "Pijat Balita (2-5 tahun)",
+      "Pijat Pediatric (Kolik, Flu, Sakit, Jatuh / Keseleo, Susah BAB, Susah Makan, Keterlambatan Perkembangan)",
+      "Infrared",
+      "Pijat Oksitisin",
+      "Pijat Perineum",
+      "Akupuntur",
+      "Mathai Krekk",
+      "Colon Cleansing",
+      "Moxatherpy",
+      "Pijat Urut Tradisional",
+      "Paz Maryam",
+      "Totok Wajah",
+    ],
     image: trapis,
-    available: "Senin - Jumat",
+    day: "Senin - Jumat",
+    day2: "Sabtu - Minggu",
+    time: "09.00 - 17.00",
+    time2: "09.00 - 15.00",
   },
   {
     title: "Dokter Kandungan",
-    description: "Description 3",
+    description: ["USG", "Konsultasi Kehamilan", "Program Kamil", "Pasang IUD"],
     image: kandungan,
-    available: "Senin - Jumat",
+    day: "Jumat",
+    day2: "Sabtu",
+    time: "13.00 - 17.00",
+    time2: "08.00 - 11.00",
   },
 ]);
 </script>
 
 <template>
-  <article class="flex flex-col text-center px-20 py-10 gap-10">
+  <article class="flex flex-col text-center py-10 gap-10">
     <span class="text-2xl font-bold">Layanan Kami</span>
-    <div class="flex items-center justify-between gap-5">
+    <div class="flex flex-wrap items-center justify-center gap-5">
       <div v-for="(item, index) in data" :key="index">
-        <div
-          class="flex bg-blue-200 shadow-md rounded-xl px-5 py-5 items-center"
-        >
-          <div>
-            <img :src="item.image" alt="" class="w-96 h-72" />
+        <div class="flex bg-blue-200 shadow-md rounded-xl px-5 py-5">
+          <div class="">
+            <img :src="item.image" alt="" class="h-96" />
           </div>
-          <div>
+          <div
+            class="flex-1 text-left space-y-2"
+            :class="[
+              index === 2 ? 'flex flex-col justify-center' : 'inline-block',
+            ]"
+          >
             <h1 class="text-xl font-bold">{{ item.title }}</h1>
-            <h3>{{ item.available }}</h3>
-            <p>{{ item.description }}</p>
+            <div class="flex gap-10 items-center">
+              <div>
+                <h2>{{ item.day }}</h2>
+                <h3>{{ item.time }}</h3>
+              </div>
+              <div>
+                <h2>{{ item.day2 }}</h2>
+                <h3>{{ item.time2 }}</h3>
+              </div>
+            </div>
+            <hr class="border-black w-[60%]" />
+            <ul class="list-disc gap-5 max-w-96 columns-2">
+              <li v-for="(desc, idx) in item.description" :key="idx">
+                {{ desc }}
+              </li>
+            </ul>
           </div>
         </div>
       </div>

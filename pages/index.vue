@@ -1,8 +1,8 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: "default",
-  name: "Homepage",
-});
+// definePageMeta({
+//   layout: true,
+//   name: "Homepage",
+// });
 useSeoMeta({
   title: "Home Page",
 });

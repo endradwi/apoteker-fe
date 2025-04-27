@@ -1,19 +1,20 @@
 <script setup lang="ts">
 definePageMeta({
-    layout: 'default',
-    name: 'Homepage',
-})
+  layout: "default",
+  name: "Homepage",
+});
 useSeoMeta({
-    title: 'Home Page'
-})
+  title: "Home Page",
+});
 </script>
 <template>
-    <BannerHome/>
-    <Card/>
+  <BannerHome />
+  <AboutUs />
+  <Card />
 </template>
 
 <style scoped>
-*{
-    font-family: "Mulish";
+* {
+  font-family: "Mulish";
 }
 </style>

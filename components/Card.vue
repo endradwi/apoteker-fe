@@ -72,8 +72,14 @@ const data = ref([
   <article class="flex flex-col text-center py-10 gap-10">
     <span class="text-2xl font-bold">Layanan Kami</span>
     <div class="flex flex-wrap items-center justify-center gap-5">
-      <div v-for="(item, index) in data" :key="index">
-        <div class="flex bg-blue-200 shadow-md rounded-xl px-5 py-5">
+      <div
+        v-for="(item, index) in data"
+        :key="index"
+        class="p-2 border-2 border-red-500 rounded-xl shadow-lg"
+      >
+        <div
+          class="flex bg-[#C95792] shadow-md rounded-xl px-5 py-5 hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105 text-white"
+        >
           <div class="">
             <img :src="item.image" alt="" class="h-96" />
           </div>
@@ -94,7 +100,7 @@ const data = ref([
                 <h3>{{ item.time2 }}</h3>
               </div>
             </div>
-            <hr class="border-black w-[60%]" />
+            <hr class="border-white w-[70%]" />
             <ul class="list-disc gap-5 max-w-96 columns-2">
               <li v-for="(desc, idx) in item.description" :key="idx">
                 {{ desc }}

@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full h-full px-52 pt-5 pb-20 bg-[#EC7FA9] flex flex-col gap-5">
+  <div
+    class="w-full h-full px-52 pt-5 pb-20 bg-[#C95792]/80 flex flex-col gap-5 border shadow-2xl"
+  >
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-5">
         <div class="flex flex-col gap-5">

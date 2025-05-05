@@ -1,6 +1,6 @@
 <script setup lang="ts">
 function onClick() {
-  navigateTo("/admin");
+  navigateTo("/regis");
   console.log("Button clicked!");
 }
 </script>

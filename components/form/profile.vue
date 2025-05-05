@@ -1,9 +1,4 @@
-<script setup lang="ts">
-function onClick() {
-  navigateTo("/admin");
-  console.log("Button clicked!");
-}
-</script>
+<script setup lang="ts"></script>
 <template>
   <div class="flex flex-col gap-5 mx-96 my-28">
     <h1 class="text-5xl font-bold">Hello, People</h1>

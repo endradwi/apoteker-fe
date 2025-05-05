@@ -1,13 +1,11 @@
 <script setup lang="ts">
-// definePageMeta({
-//   layout: true,
-//   name: "Homepage",
-// });
 useSeoMeta({
   title: "Profile Page",
 });
 </script>
-<template></template>
+<template>
+  <FormProfile />
+</template>
 
 <style scoped>
 * {

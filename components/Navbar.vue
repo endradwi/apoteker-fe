@@ -72,11 +72,11 @@ const toggleDropdown = () => {
               Profile
             </li>
           </NuxtLink>
-          <NuxtLink to="/regis">
+          <NuxtLink to="/history">
             <li
               class="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:bg-slate-200"
             >
-              Settings
+              History Pendaftaran
             </li>
           </NuxtLink>
           <NuxtLink to="/">

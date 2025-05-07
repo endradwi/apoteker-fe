@@ -29,6 +29,7 @@ export default function useFetch(request: RequestInfo, opts?: any): Promise<any>
         "USER_ID": user.value.id,
         ...customHeaders
       }
+      console.log("Request:", request, options);
     },
     onRequestError({ request, options, error }: { request: RequestInfo; options: RequestInit; error: any }) {
       // Handle the request errors

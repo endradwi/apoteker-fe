@@ -7,15 +7,27 @@ useSeoMeta({
   title: "Register Page",
 });
 
-import { useUser } from "~/stores/user";
+import { ref } from "vue";
 
-const store = useUser();
+const email = ref("");
+const password = ref("");
 
 const onClick = async () => {
-  const register = await store.register();
-  console.log("Register button clicked", register);
   const url = useRuntimeConfig().public.apiUrl;
+  const res = await fetch(`${url}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value,
+    }),
+  });
+
+  const data = await res.json();
   console.log("API URL:", url);
+  console.log("Response:", data);
 };
 </script>
 <template>
@@ -40,23 +52,28 @@ const onClick = async () => {
             class="w-20 h-20"
           />
           <h1 class="text-3xl font-bold">Register</h1>
-          <form class="flex flex-col gap-5 w-full px-10">
+          <form
+            @submit.prevent="onClick"
+            class="flex flex-col gap-5 w-full px-10"
+          >
             <input
               type="text"
-              placeholder="Username"
+              v-model="email"
+              placeholder="Email"
               class="border border-gray-300 rounded-md px-4 py-2"
             />
             <input
               type="password"
+              v-model="password"
               placeholder="Password"
               class="border border-gray-300 rounded-md px-4 py-2"
             />
-            <div
+            <button
+              type="submit"
               class="bg-[#3D365C] text-white rounded-md px-4 py-2 font-bold text-center"
-              @click="onClick"
             >
               Register
-            </div>
+            </button>
           </form>
         </div>
       </div>

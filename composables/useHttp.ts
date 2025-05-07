@@ -4,12 +4,12 @@ import type { UserSession } from "@/types/user";
 export default function useFetch(request: RequestInfo, opts?: any): Promise<any> {
   const config = useRuntimeConfig();
   const token = useCookie<string>("token", {
-    domain: config.public.cookieDomain,
+    domain: config.public.cookieDomain as string,
     secure: true,
     sameSite: "none"
   });
   const user = useCookie<UserSession>("user", {
-    domain: config.public.cookieDomain,
+    domain: config.public.cookieDomain as string,
     secure: true,
     sameSite: "none"
   });

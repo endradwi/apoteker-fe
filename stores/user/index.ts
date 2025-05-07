@@ -1,9 +1,9 @@
 import { defineStore, acceptHMRUpdate } from "pinia"
-import { createState } from "~/stores/home/state"
-import getters from "~/stores/home/getters"
-import actions from "~/stores/home/actions"
+import { createState } from "~/stores/user/state"
+import getters from "~/stores/user/getters"
+import actions from "~/stores/user/actions"
 
-const useHome = defineStore('home', {
+export const useUser = defineStore('user', {
   state: createState,
   getters: getters,
   actions: {
@@ -13,7 +13,7 @@ const useHome = defineStore('home', {
 
 // Ensure correct store definition for HMR
 if ((import.meta as any).hot) {
-  (import.meta as any).hot.accept(acceptHMRUpdate(useHome, (import.meta as any).hot));
+  (import.meta as any).hot.accept(acceptHMRUpdate(useUser, (import.meta as any).hot));
 }
 
-export default useHome;
+// export default useUser;

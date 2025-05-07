@@ -1,19 +1,17 @@
-import type { HomeCourseProgress, HomeCourseRecommendation } from "~/types/home"
-
-export interface RootState {
-  isLoadCourseProgress: boolean;
-  coursesProgress: HomeCourseProgress[] | null;
-  api: any;
-  isLoadCoursesRecommendation: boolean;
-  coursesRecommendation: HomeCourseRecommendation[] | null;
+export interface UserState {
+  response: {
+    success?: boolean;
+    message?: string;
+    result?: any[];
+  };
 }
 
-export const createState = (): Partial<RootState> => {
+export const createState = (): UserState => {
   return {
-    coursesProgress: null,
-    api: useNuxtApp().$api,
-    isLoadCourseProgress: true,
-    isLoadCoursesRecommendation: true,
-    coursesRecommendation: null,
-  } as Partial<RootState>
+    response: {
+      success: false,
+      message: "",
+      result: [],
+    }
+  };
 }

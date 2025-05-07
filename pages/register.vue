@@ -6,6 +6,17 @@ definePageMeta({
 useSeoMeta({
   title: "Register Page",
 });
+
+import { useUser } from "~/stores/user";
+
+const store = useUser();
+
+const onClick = async () => {
+  const register = await store.register();
+  console.log("Register button clicked", register);
+  const url = useRuntimeConfig().public.apiUrl;
+  console.log("API URL:", url);
+};
 </script>
 <template>
   <div class="w-screen h-screen flex">
@@ -40,16 +51,12 @@ useSeoMeta({
               placeholder="Password"
               class="border border-gray-300 rounded-md px-4 py-2"
             />
-            <NuxtLink
-              to="/login"
+            <div
               class="bg-[#3D365C] text-white rounded-md px-4 py-2 font-bold text-center"
+              @click="onClick"
             >
-              <!-- <button -->
-              <!-- type="submit" -->
-              <!-- > -->
-              Login
-              <!-- </button> -->
-            </NuxtLink>
+              Register
+            </div>
           </form>
         </div>
       </div>

@@ -8,6 +8,7 @@ export default function useHttp() {
     secure: true,
     sameSite: "none"
   });
+  console.log("Token:", token.value);
   const user = useCookie<UserSession>("user", {
     domain: config.public.cookieDomain as string,
     secure: true,
@@ -16,6 +17,7 @@ export default function useHttp() {
 
   const fetcher = $fetch.create({
     baseURL: config.public.apiUrl as string,
+    credentials: "include",
     onRequest({ options }) {
       options.headers = {
         ...options.headers,

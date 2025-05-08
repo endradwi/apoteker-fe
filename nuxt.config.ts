@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiUrl: process.env.NUXT_PUBLIC_API_URL || "http://localhost:8889"
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || "http://localhost:8889",
+      cookieDomain: process.env.COOKIE_DOMAIN ?? "-",
     }
   }, 
   compatibilityDate: '2024-11-01',

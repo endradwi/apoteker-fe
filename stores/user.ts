@@ -20,5 +20,21 @@ export const useUserStore = defineStore('user', {
         console.error('Failed to fetch user:', error);
       }
     },
+    async login(email: string, password: string) {
+        const { post } = useHttp();
+        try {
+          const data = await post('auth/login', {
+              email,
+              password,
+          }, {
+            credetials: 'include',
+          });
+  
+          return data;
+          
+        } catch (error) {
+          console.error('Failed to fetch user:', error);
+        }
+      },
   },
 });

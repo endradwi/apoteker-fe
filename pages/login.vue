@@ -14,7 +14,7 @@ const password = ref("");
 const store = useUserStore();
 
 const onClick = async () => {
-  const response = await store.register(email.value, password.value);
+  const response = await store.login(email.value, password.value);
   console.log("Registration successful = ", response);
 };
 </script>

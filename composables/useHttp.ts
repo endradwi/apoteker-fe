@@ -27,7 +27,6 @@ export default function useHttp() {
     },
     onResponseError({ response }) {
       if (response.status === 401) {
-        // Maybe redirect to login or clear token
         console.error("Unauthorized");
       }
     }

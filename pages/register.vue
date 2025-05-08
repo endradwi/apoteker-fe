@@ -12,22 +12,11 @@ import { ref } from "vue";
 const email = ref("");
 const password = ref("");
 
-const onClick = async () => {
-  const url = useRuntimeConfig().public.apiUrl;
-  const res = await fetch(`${url}/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: email.value,
-      password: password.value,
-    }),
-  });
+const store = useUserStore();
 
-  const data = await res.json();
-  console.log("API URL:", url);
-  console.log("Response:", data);
+const onClick = async () => {
+  const response = await store.register(email.value, password.value);
+  console.log("Registration successful = ", response);
 };
 </script>
 <template>

@@ -1,7 +1,7 @@
+// composables/useHttp.ts
 import type { UserSession } from "@/types/user";
 
-/* eslint-disable */
-export default function useFetch(request: RequestInfo, opts?: any): Promise<any> {
+export default function useHttp() {
   const config = useRuntimeConfig();
   const token = useCookie<string>("token", {
     domain: config.public.cookieDomain as string,
@@ -13,42 +13,29 @@ export default function useFetch(request: RequestInfo, opts?: any): Promise<any>
     secure: true,
     sameSite: "none"
   });
-  const defaultOptions = (!opts || (opts && !opts.headers))
-    ? { ...opts, headers: {} }
-    : opts;
-  const {
-    headers: customHeaders,
-    ...customOptions
-  } = defaultOptions;
 
-  const options = {
-    onRequest({ request, options }: { request: RequestInfo; options: RequestInit }) {
+  const fetcher = $fetch.create({
+    baseURL: config.public.apiUrl as string,
+    onRequest({ options }) {
       options.headers = {
         ...options.headers,
-        "Authorization": "Bearer " + token.value,
-        "USER_ID": user.value.id,
-        ...customHeaders
+        Authorization: `Bearer ${token.value}`,
+        USER_ID: user.value?.id || '',
+      };
+    },
+    onResponseError({ response }) {
+      if (response.status === 401) {
+        // Maybe redirect to login or clear token
+        console.error("Unauthorized");
       }
-      console.log("Request:", request, options);
-    },
-    onRequestError({ request, options, error }: { request: RequestInfo; options: RequestInit; error: any }) {
-      // Handle the request errors
-    },
-    async onResponse({ request, response, options }: { request: RequestInfo; response: Response; options: RequestInit }) {
-      // Process the response data
-      return await response;
-    },
-    onResponseError({ request, response, options }: { request: any; response: any; options: any }) {
-      // Handle the response errors
-      response._data = typeof response._data === "object" ? response._data : JSON.parse(response._data as string);
-    },
-    ...customOptions
-  }
+    }
+  });
 
-  if (!(request as string).includes("http")) {
-    options.baseURL = config.public.apiBaseUrl;
-  }
-
-  return $fetch(request, options);
+  return {
+    get: (url: string, opts?: any) => fetcher(url, { ...opts, method: 'GET' }),
+    post: (url: string, body?: any, opts?: any) => fetcher(url, { ...opts, method: 'POST', body }),
+    put: (url: string, body?: any, opts?: any) => fetcher(url, { ...opts, method: 'PUT', body }),
+    patch: (url: string, body?: any, opts?: any) => fetcher(url, { ...opts, method: 'PATCH', body }),
+    del: (url: string, opts?: any) => fetcher(url, { ...opts, method: 'DELETE' }),
+  };
 }
-/* eslint-enable */

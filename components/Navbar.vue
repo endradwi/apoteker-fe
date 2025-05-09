@@ -4,6 +4,8 @@ import { ref } from "vue";
 const showDropdown = ref(false);
 const profileData = ref(false);
 const name = ref("");
+const router = useRouter();
+const email = ref("");
 
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
@@ -16,6 +18,7 @@ async function profile() {
   if (response) {
     profileData.value = !profileData.value;
     name.value = (response as any).results.fullname;
+    email.value = (response as any).results.email;
     console.log("Profile data ", name.value);
     console.log("Profile retrieved successfully", response);
   } else {
@@ -23,6 +26,14 @@ async function profile() {
     console.error("Failed to retrieve profile");
   }
 }
+const logout = async () => {
+  const token = useCookie("token");
+  token.value = null;
+  store.$reset();
+  profileData.value = false;
+  router.push("/");
+  // location.reload();
+};
 onMounted(() => {
   profile();
 });
@@ -39,8 +50,8 @@ onMounted(() => {
       />
     </nuxt-link>
     <div class="flex items-center gap-2" v-if="profileData">
-      <div v-if="name === ''">Hello, People</div>
-      <div v-else>Hello, {{ name }}</div>
+      <div v-if="name === ''">{{ email }}</div>
+      <div v-else>{{ name }}</div>
       <div class="flex items-center">
         <NuxtLink to="/profile">
           <svg
@@ -100,13 +111,13 @@ onMounted(() => {
               History Pendaftaran
             </li>
           </NuxtLink>
-          <NuxtLink to="/">
+          <div @click="logout">
             <li
               class="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:bg-slate-200"
             >
               Logout
             </li>
-          </NuxtLink>
+          </div>
         </ul>
       </div>
     </div>

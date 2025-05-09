@@ -32,10 +32,26 @@ async function editProfile() {
   console.log("Profile data = ", response);
 }
 
+async function profile() {
+  const response = await store.profile();
+  console.log("Profile data = ", response);
+  if (response) {
+    name.value = (response as any).results.fullname;
+    hp.value = (response as any).results.phone_number;
+    email.value = (response as any).results.email;
+  } else {
+    // Handle profile retrieval error
+    console.error("Failed to retrieve profile");
+  }
+}
+
 watch(image, (newImage) => {
   if (newImage) {
     previewUrl.value = URL.createObjectURL(newImage);
   }
+});
+onMounted(() => {
+  profile();
 });
 </script>
 <template>

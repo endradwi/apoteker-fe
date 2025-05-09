@@ -1,14 +1,54 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const name = ref("");
+const hp = ref("");
+const email = ref("");
+const password = ref("");
+const store = useUserStore();
+const image = ref<File | null>(null);
+
+const previewUrl = ref<string | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
+
+function triggerFileInput() {
+  fileInput.value?.click();
+}
+
+function handleImageUpload(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files[0]) {
+    image.value = target.files[0];
+    previewUrl.value = URL.createObjectURL(target.files[0]);
+  }
+}
+
+async function editProfile() {
+  const response = await store.patchprofile(
+    name.value,
+    hp.value,
+    email.value,
+    password.value,
+    image.value
+  );
+  console.log("Profile data = ", response);
+}
+
+watch(image, (newImage) => {
+  if (newImage) {
+    previewUrl.value = URL.createObjectURL(newImage);
+  }
+});
+</script>
 <template>
   <div class="flex flex-col gap-5 mx-96 my-28">
     <h1 class="text-5xl font-bold">Hello, People</h1>
     <section
       class="px-5 py-10 rounded-2xl border-2 border-[#C95792] shadow-xl shadow-[#3D365C]"
     >
-      <form action="" class="flex gap-5">
+      <form @submit.prevent="editProfile" class="flex gap-5">
         <!-- Avatar Upload with Hover Camera Icon -->
         <div
           class="group border border-black relative overflow-hidden w-44 h-36 rounded-full text-center flex items-center justify-center hover:bg-black/50 transition-all duration-300 ease-in-out cursor-pointer"
+          @click="triggerFileInput"
         >
           <!-- Profile Icon -->
           <svg
@@ -17,6 +57,7 @@
             height="150"
             viewBox="0 0 32 32"
             class="text-black group-hover:opacity-30 transition-opacity duration-300"
+            v-if="image === null && previewUrl === null"
           >
             <path
               fill="currentColor"
@@ -27,7 +68,17 @@
               d="M16 2a14 14 0 1 0 14 14A14.016 14.016 0 0 0 16 2m-6 24.377V25a3.003 3.003 0 0 1 3-3h6a3.003 3.003 0 0 1 3 3v1.377a11.9 11.9 0 0 1-12 0m13.993-1.451A5 5 0 0 0 19 20h-6a5 5 0 0 0-4.992 4.926a12 12 0 1 1 15.985 0"
             />
           </svg>
-
+          <img
+            v-else
+            :src="`http://localhost:8889/profile/image/${image?.name}`"
+          />
+          <!-- Preview Image -->
+          <img
+            v-if="previewUrl"
+            :src="previewUrl"
+            alt="Preview"
+            class="w-full h-full object-cover rounded-full"
+          />
           <!-- Camera Icon on Hover -->
           <div
             class="absolute inset-0 flex items-center text-white justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -46,20 +97,29 @@
               />
             </svg>
           </div>
+          <input
+            ref="fileInput"
+            type="file"
+            accept="image/*"
+            class="hidden"
+            @change="handleImageUpload"
+          />
         </div>
 
         <div class="flex flex-col gap-5 w-full">
           <div class="flex flex-col">
-            <label for="">Full name</label>
+            <label for="">Nama Lengkap</label>
             <input
               type="text"
+              v-model="name"
               class="border border-black rounded-md py-3 px-5"
             />
           </div>
           <div class="flex flex-col">
-            <label for="">Phone Number</label>
+            <label for="">No.Telpon</label>
             <input
               type="text"
+              v-model="hp"
               class="border border-black rounded-md py-3 px-5"
             />
           </div>
@@ -67,6 +127,7 @@
             <label for="">Email</label>
             <input
               type="text"
+              v-model="email"
               class="border border-black rounded-md py-3 px-5"
             />
           </div>
@@ -74,6 +135,7 @@
             <label for="">Password</label>
             <input
               type="text"
+              v-model="password"
               class="border border-black rounded-md py-3 px-5"
             />
           </div>

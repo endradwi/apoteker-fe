@@ -10,12 +10,21 @@ import { ref } from "vue";
 
 const email = ref("");
 const password = ref("");
+const router = useRouter();
 
 const store = useUserStore();
 
 const onClick = async () => {
   const response = await store.login(email.value, password.value);
   console.log("Registration successful = ", response);
+  if (response) {
+    // Redirect to login page after successful registration
+    router.push("/");
+  } else {
+    // Handle registration error
+    console.error("Registration failed");
+    alert;
+  }
 };
 </script>
 <template>

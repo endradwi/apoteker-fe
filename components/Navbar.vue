@@ -2,10 +2,30 @@
 import { ref } from "vue";
 
 const showDropdown = ref(false);
+const profileData = ref(false);
+const name = ref("");
 
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
 };
+const store = useUserStore();
+
+async function profile() {
+  const response = await store.profile();
+  console.log("Profile data = ", response);
+  if (response) {
+    profileData.value = !profileData.value;
+    name.value = (response as any).results.fullname;
+    console.log("Profile data ", name.value);
+    console.log("Profile retrieved successfully", response);
+  } else {
+    // Handle profile retrieval error
+    console.error("Failed to retrieve profile");
+  }
+}
+onMounted(() => {
+  profile();
+});
 </script>
 <template>
   <div
@@ -18,8 +38,9 @@ const toggleDropdown = () => {
         class="w-14 h-14"
       />
     </nuxt-link>
-    <div class="flex items-center gap-2">
-      <div>Hello, People</div>
+    <div class="flex items-center gap-2" v-if="profileData">
+      <div v-if="name === ''">Hello, People</div>
+      <div v-else>Hello, {{ name }}</div>
       <div class="flex items-center">
         <NuxtLink to="/profile">
           <svg
@@ -89,7 +110,7 @@ const toggleDropdown = () => {
         </ul>
       </div>
     </div>
-    <div class="flex gap-5">
+    <div class="flex gap-5" v-else>
       <nuxt-link
         to="/login"
         class="bg-[#3D365C] px-5 py-2 rounded-md text-white"

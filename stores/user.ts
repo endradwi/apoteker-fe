@@ -12,7 +12,9 @@ export const useUserStore = defineStore('user', {
         const data = await post('auth/register', {
             email,
             password,
-        });
+        },
+        {credentials: 'include'}
+      );
 
         return data;
         
@@ -29,11 +31,26 @@ export const useUserStore = defineStore('user', {
           }, {
             credetials: 'include',
           });
-  
+  this.user = data; // simpan ke state jika perlu 
           return data;
           
         } catch (error) {
           console.error('Failed to fetch user:', error);
+        }
+      },
+      async profile() {
+        const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
+  
+        try {
+          const data = await get('users', {
+            credentials: 'include',
+          });
+  
+          this.user = data; // simpan ke state jika perlu
+          return data;
+        } catch (error) {
+          console.error('❌ Failed to fetch profile:', error);
+          return null;
         }
       },
   },

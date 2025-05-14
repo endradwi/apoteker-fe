@@ -84,6 +84,38 @@ export const useUserStore = defineStore('user', {
           console.error('❌ Failed to fetch profile:', error);
           return null;
         }
+      },
+      async reserved(
+        fullname: string,
+        phone_number: string,
+        email: string,
+        password: string,
+        image?: File | null
+      ) {
+        const { patch } = useHttp();
+        const formData = new FormData();
+      
+        formData.append("fullname", fullname);
+        formData.append("phone_number", phone_number);
+        formData.append("email", email);
+        formData.append("password", password);
+      
+        if (image) {
+          formData.append("image", image);
+        }
+      
+        try {
+          const data = await patch('users', formData, {
+            credentials: 'include',
+            // ❌ Jangan set Content-Type secara manual! Biarkan browser handle.
+          });
+      
+          this.user = data;
+          return data;
+        } catch (error) {
+          console.error('❌ Failed to fetch profile:', error);
+          return null;
+        }
       },      
   },
 });

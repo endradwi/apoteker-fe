@@ -9,7 +9,7 @@ useSeoMeta({
 </script>
 <template>
   <div class="w-screen h-screen flex flex-col py-24 px-52 gap-10">
-    <h1 class="text-5xl font-black">Pasien Register</h1>
+    <h1 class="text-5xl font-black">Pendaftaran Pasien</h1>
     <table>
       <thead>
         <tr>

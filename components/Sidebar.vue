@@ -47,20 +47,7 @@ const route = useRoute();
               : '',
           ]"
         >
-          Pasien
-        </li></NuxtLink
-      >
-      <NuxtLink to="/admin/admin" class="*:pl-5 *:py-3 text-white">
-        <li
-          class="hover:bg-white"
-          :class="[
-            'hover:bg-white',
-            route.path === '/admin/admin'
-              ? 'bg-white font-bold text-black'
-              : '',
-          ]"
-        >
-          Admin
+          Pendaftaran
         </li></NuxtLink
       >
     </ul>

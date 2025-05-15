@@ -39,7 +39,7 @@ export const useUserStore = defineStore('user', {
         }
       },
       async profile() {
-        const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
+        const { get } = useHttp(); 
   
         try {
           const data = await get('users', {

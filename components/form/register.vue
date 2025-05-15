@@ -13,6 +13,7 @@ const doctorList = ref([
 const arrow = ref(false);
 const doctorSelect = ref<HTMLSelectElement | null>(null);
 const dateInput = ref<HTMLInputElement | null>(null);
+const store = useUserStore();
 
 function openDatePicker() {
   dateInput.value?.showPicker(); // showPicker() hanya didukung di Chrome/Edge terbaru
@@ -24,17 +25,27 @@ function toggleArrow() {
 }
 function formatDateToISOString(dateStr: string): string {
   const dateObj = new Date(dateStr);
-  return dateObj.toISOString().split(".")[0] + "Z"; // hasil: 2025-05-16T00:00:00Z
+  return dateObj.toISOString().split(".")[0] + "Z";
 }
-function reserve() {
+
+async function reserve() {
   const data = {
     name: name.value,
     phone_number: phone_number.value,
     age: age.value,
-    date: formatDateToISOString(date.value), // format date to ISO string
+    date: formatDateToISOString(date.value),
     doctor: doctor.value,
     complaint: complaint.value,
   };
+  const response = await store.reserve(
+    data.name,
+    data.phone_number,
+    data.age,
+    data.date,
+    data.doctor,
+    data.complaint
+  );
+  console.log("data response=", response);
   console.log("Form data = ", data);
 }
 </script>

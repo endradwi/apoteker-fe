@@ -85,36 +85,24 @@ export const useUserStore = defineStore('user', {
           return null;
         }
       },
-      async reserved(
-        fullname: string,
-        phone_number: string,
-        email: string,
-        password: string,
-        image?: File | null
-      ) {
-        const { patch } = useHttp();
-        const formData = new FormData();
-      
-        formData.append("fullname", fullname);
-        formData.append("phone_number", phone_number);
-        formData.append("email", email);
-        formData.append("password", password);
-      
-        if (image) {
-          formData.append("image", image);
-        }
-      
+      async reserve(fullname: string, phone_number: string, age: string, date: any, doctor: string, complaint: string) {
+        const { post } = useHttp();
         try {
-          const data = await patch('users', formData, {
-            credentials: 'include',
-            // ❌ Jangan set Content-Type secara manual! Biarkan browser handle.
+          const data = await post('reserve', {
+              fullname,
+              phone_number,
+              age,
+              date,
+              doctor,
+              complaint,
+          }, {
+            credetials: 'include',
           });
-      
-          this.user = data;
+  this.user = data; // simpan ke state jika perlu 
           return data;
+          
         } catch (error) {
-          console.error('❌ Failed to fetch profile:', error);
-          return null;
+          console.error('Failed to fetch user:', error);
         }
       },      
   },

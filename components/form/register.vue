@@ -12,6 +12,12 @@ const doctorList = ref([
 ]);
 const arrow = ref(false);
 const doctorSelect = ref<HTMLSelectElement | null>(null);
+const dateInput = ref<HTMLInputElement | null>(null);
+
+function openDatePicker() {
+  dateInput.value?.showPicker(); // showPicker() hanya didukung di Chrome/Edge terbaru
+}
+
 function toggleArrow() {
   arrow.value = !arrow.value;
   doctorSelect.value?.focus();
@@ -41,78 +47,102 @@ function reserve() {
       <form @submit.prevent="reserve" class="flex gap-5">
         <div class="flex flex-col gap-5 w-full">
           <div class="flex flex-col">
-            <label for="">Full name</label>
+            <label for="fullname">Full name</label>
             <input
               type="text"
               v-model="name"
+              id="fullname"
+              placeholder="Masukan Nama Lengkap"
               class="border border-black rounded-md py-3 px-5"
             />
           </div>
           <div class="flex flex-col">
-            <label for="">Phone Number</label>
+            <label for="phone_number">Phone Number</label>
             <input
               type="text"
               v-model="phone_number"
+              id="phone_number"
+              placeholder="Masukan No Telepon"
               class="border border-black rounded-md py-3 px-5"
             />
           </div>
           <div class="flex flex-col">
-            <label for="">Age</label>
+            <label for="age">Age</label>
             <input
               type="text"
               v-model="age"
+              id="age"
+              placeholder="Masukan Umur"
               class="border border-black rounded-md py-3 px-5"
             />
           </div>
           <div class="flex flex-col">
-            <label for="">Date</label>
-            <input
-              type="date"
-              v-model="date"
-              class="border border-black rounded-md py-3 px-5"
-            />
+            <label for="date"
+              >Date
+              <span class="text-red-500 text-[12px]"
+                >(*Pilih tanggal berobat)</span
+              ></label
+            >
+            <div @click="openDatePicker" class="cursor-pointer w-full">
+              <input
+                type="date"
+                ref="dateInput"
+                v-model="date"
+                id="date"
+                class="border border-black rounded-md py-3 px-5 w-full"
+              />
+            </div>
           </div>
-          <div class="flex flex-col">
-            <label for="">Dokter</label>
-            <!-- <input -->
-            <!-- type="text" -->
-            <!-- v-model="doctor" -->
-            <!-- class="border border-black rounded-md py-3 px-5" -->
-            <!-- /> -->
-            <div class="flex w-full border border-black rounded-md py-3 px-2">
-              <select
-                v-model="doctor"
-                class="w-full border-box outline-0"
-                @focus="arrow = true"
-                @blur="arrow = false"
-                @change="arrow = false"
-              >
-                <option v-for="doctor in doctorList" :key="doctor.id">
-                  {{ doctor.name }}
-                </option>
-              </select>
+
+          <div class="relative">
+            <label for="doctor">Dokter</label>
+            <div
+              class="border border-black rounded-md py-3 px-5 cursor-pointer flex justify-between items-center"
+              @click="toggleArrow"
+            >
+              <span>{{ doctor || "Pilih Dokter" }}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
-                @click="toggleArrow"
-                :class="arrow ? 'rotate-180' : 'rotate-0'"
-                class="cursor-pointer transition-transform duration-300"
+                :class="[
+                  'transition-transform duration-300',
+                  arrow ? 'rotate-180' : 'rotate-0',
+                ]"
               >
-                <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
                 <path
                   fill="currentColor"
                   d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6l-6-6z"
                 />
               </svg>
             </div>
+
+            <!-- Dropdown menu -->
+            <div
+              v-show="arrow"
+              class="absolute z-10 w-full bg-white border border-black rounded-md mt-1 shadow-lg"
+            >
+              <div
+                v-for="item in doctorList"
+                :key="item.id"
+                class="px-5 py-3 hover:bg-gray-200 cursor-pointer"
+                @click="
+                  doctor = item.name;
+                  arrow = false;
+                "
+              >
+                {{ item.name }}
+              </div>
+            </div>
           </div>
+
           <div class="flex flex-col">
-            <label for="">Keluhan</label>
+            <label for="complaint">Keluhan</label>
             <input
               type="text"
               v-model="complaint"
+              id="complaint"
               class="border border-black rounded-md py-3 px-5"
             />
           </div>

@@ -141,6 +141,21 @@ export const useUserStore = defineStore('user', {
           console.error('❌ Failed to fetch profile:', error);
           return null;
         }
+      },
+      async getHistory() {
+        const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
+  
+        try {
+          const data = await get('reserve/all/reserve/users', {
+            credentials: 'include',
+          });
+  
+          this.user = data; // simpan ke state jika perlu
+          return data;
+        } catch (error) {
+          console.error('❌ Failed to fetch profile:', error);
+          return null;
+        }
       },      
   },
 });

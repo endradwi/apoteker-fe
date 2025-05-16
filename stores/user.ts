@@ -119,6 +119,28 @@ export const useUserStore = defineStore('user', {
           console.error('❌ Failed to fetch profile:', error);
           return null;
         }
+      },
+      async updateStatus(
+        id: number,
+        role: number
+      ) {
+        const { patch } = useHttp();
+        const formData = new FormData();
+      
+        formData.append("role_id", role.toString());
+      
+        try {
+          const data = await patch(`users/${id}`, formData, {
+            credentials: 'include',
+            // ❌ Jangan set Content-Type secara manual! Biarkan browser handle.
+          });
+      
+          this.user = data;
+          return data;
+        } catch (error) {
+          console.error('❌ Failed to fetch profile:', error);
+          return null;
+        }
       },      
   },
 });

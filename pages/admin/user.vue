@@ -28,13 +28,26 @@ async function getAllUser() {
 }
 
 function EditClick(user: User) {
-  selectedUser.value = user;
+  selectedUser.value = { ...user };
   editOpen.value = true;
 }
 async function editProfile() {
-  // const response = await store.patchProfile({
-  // role_id: role.value,
-  // });
+  if (!selectedUser.value) return;
+
+  const response = await store.updateStatus(
+    selectedUser.value.id,
+    selectedUser.value.role_id
+  );
+  console.log("Profile data = ", response);
+
+  // Update user di list users
+  const index = users.value.findIndex((u) => u.id === selectedUser.value?.id);
+  // console.log("index=", index);
+  if (index !== -1) {
+    users.value[index] = { ...selectedUser.value };
+  }
+
+  editOpen.value = false;
   // console.log("Profile data = ", response);
 }
 
@@ -86,6 +99,7 @@ onMounted(() => {
           <input
             v-model="selectedUser.fullname"
             type="text"
+            disabled
             class="border border-gray-300 p-2 rounded w-full"
           />
         </div>
@@ -95,6 +109,7 @@ onMounted(() => {
           <input
             v-model="selectedUser.phone_number"
             type="text"
+            disabled
             class="border border-gray-300 p-2 rounded w-full"
           />
         </div>
@@ -104,6 +119,7 @@ onMounted(() => {
           <input
             v-model="selectedUser.email"
             type="email"
+            disabled
             class="border border-gray-300 p-2 rounded w-full"
           />
         </div>

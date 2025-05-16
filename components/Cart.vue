@@ -7,8 +7,7 @@ async function fetchHistory() {
   const response = await store.getHistory();
   if (response) {
     const results = (response as any).results;
-    items.value = results; // ✅ update reactive array
-    console.log("History data=", items.value);
+    items.value = results;
   } else {
     console.error("Failed to fetch history");
   }
@@ -46,7 +45,9 @@ onMounted(() => {
               {{ item.phone_number }}
             </td>
             <td class="border border-black py-2">{{ item.age }}</td>
-            <td class="border border-black py-2">{{ item.date }}</td>
+            <td class="border border-black py-2">
+              {{ item.date.split("T")[0].split("-").reverse().join("-") }}
+            </td>
             <td class="border border-black py-2">{{ item.doctor }}</td>
             <td class="border border-black py-2">{{ item.complaint }}</td>
             <td class="border border-black py-2">

@@ -17,19 +17,23 @@ async function onClick() {
     class="flex items-center justify-between px-20 py-10 rounded-2xl bg-gradient-to-r from-white to-[#C95792] mx-10 shadow-2xl"
   >
     <div class="flex-1 space-y-5">
-      <h1 class="text-5xl font-bold">Welcome To Praktek Bidan Istiadah</h1>
-      <p class="">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+      <h1 class="text-5xl font-bold">
+        Selamat Datang di Praktek Bidan Istiadah
+      </h1>
+      <p class="max-w-4xl">
+        Kami hadir untuk memberikan pelayanan kesehatan terbaik bagi ibu dan
+        anak. Dengan tenaga medis yang ramah dan profesional, kami siap
+        mendampingi setiap langkah perjalanan kesehatan Anda.
       </p>
+      <p>🌸 Sehat Ibu, Bahagia Keluarga.</p>
       <button
         class="py-3 px-5 rounded-xl font-bold text-xl bg-[#3D365C] text-white"
         @click="onClick"
       >
-        Registration Now!
+        Daftar Sekarang!
       </button>
     </div>
-    <div class="flex-1 flex justify-center">
+    <div class="flex justify-center">
       <img src="../assets/iconBanner.png" alt="Image Banner" />
     </div>
   </section>

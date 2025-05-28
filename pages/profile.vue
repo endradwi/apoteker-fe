@@ -8,7 +8,7 @@ useSeoMeta({
 </template>
 
 <style scoped>
-* {
+/* * {
   font-family: "Mulish";
-}
+} */
 </style>

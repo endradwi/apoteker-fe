@@ -130,7 +130,7 @@ const onClick = async () => {
 </template>
 
 <style scoped>
-* {
+/* * {
   font-family: "Mulish";
-}
+} */
 </style>

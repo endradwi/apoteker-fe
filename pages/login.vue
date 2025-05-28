@@ -23,7 +23,12 @@ const onClick = async () => {
   console.log("Registration successful = ", response);
   if (response) {
     // Redirect to login page after successful registration
-    router.push("/");
+
+    if ((response as any).results.role_id === 1) {
+      router.push("/admin");
+    } else {
+      router.push("/");
+    }
   } else {
     // Handle registration error
     console.error("Registration failed");
@@ -129,7 +134,7 @@ const onClick = async () => {
 </template>
 
 <style scoped>
-* {
+/* * {
   font-family: "Mulish";
-}
+} */
 </style>

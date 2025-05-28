@@ -70,7 +70,7 @@ const data = ref([
 
 <template>
   <article class="flex flex-col text-center py-10 gap-10">
-    <span class="text-2xl font-bold">Layanan Kami</span>
+    <span class="text-5xl font-bold">Layanan Kami</span>
     <div class="flex flex-wrap items-center justify-center gap-5">
       <div
         v-for="(item, index) in data"

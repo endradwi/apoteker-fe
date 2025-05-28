@@ -14,13 +14,10 @@ const store = useUserStore();
 
 async function profile() {
   const response = await store.profile();
-  console.log("Profile data = ", response);
   if (response) {
     profileData.value = !profileData.value;
     name.value = (response as any).results.fullname;
     email.value = (response as any).results.email;
-    console.log("Profile data ", name.value);
-    console.log("Profile retrieved successfully", response);
   } else {
     // Handle profile retrieval error
     console.error("Failed to retrieve profile");

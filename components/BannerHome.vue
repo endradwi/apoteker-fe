@@ -1,7 +1,15 @@
 <script setup lang="ts">
-function onClick() {
-  navigateTo("/regis");
-  console.log("Button clicked!");
+const store = useUserStore();
+const router = useRouter();
+
+async function onClick() {
+  const response = await store.profile();
+  if (response) {
+    router.push("/regis");
+  } else {
+    // Handle profile retrieval error
+    alert("Failed to retrieve profile");
+  }
 }
 </script>
 <template>

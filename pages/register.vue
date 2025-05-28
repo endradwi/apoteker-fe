@@ -44,15 +44,15 @@ const onClick = async () => {
     <div
       class="flex-1 bg-[#C95792]/90 rounded-l-[200px] shadow-2xl shadow-[#3D365C]"
     >
-      <div class="flex items-center justify-center h-full">
+      <div class="flex flex-col items-center justify-center h-full">
+        <img
+          src="@/assets/Logogsu.png"
+          alt="Logo Perusahaan"
+          class="w-20 h-20"
+        />
         <div
           class="bg-white w-96 h-96 rounded-xl shadow-lg flex flex-col items-center justify-center gap-5"
         >
-          <img
-            src="@/assets/Logogsu.png"
-            alt="Logo Perusahaan"
-            class="w-20 h-20"
-          />
           <h1 class="text-3xl font-bold">Register</h1>
           <form
             @submit.prevent="onClick"

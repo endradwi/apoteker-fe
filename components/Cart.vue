@@ -34,6 +34,7 @@ onMounted(() => {
             <th class="border border-black px-4 py-2">Date</th>
             <th class="border border-black px-4 py-2">Dokter</th>
             <th class="border border-black px-4 py-2">Keluhan</th>
+            <th class="border border-black px-4 py-2">Rekam Medis</th>
             <th class="border border-black px-4 py-2">Status</th>
           </tr>
         </thead>
@@ -50,6 +51,7 @@ onMounted(() => {
             </td>
             <td class="border border-black py-2">{{ item.doctor }}</td>
             <td class="border border-black py-2">{{ item.complaint }}</td>
+            <td class="border border-black py-2">{{ item.rec_medic }}</td>
             <td class="border border-black py-2">
               <span class="bg-yellow-600 rounded-xl px-2 py-1 font-bold">{{
                 item.status

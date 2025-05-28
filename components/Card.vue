@@ -75,7 +75,7 @@ const data = ref([
       <div
         v-for="(item, index) in data"
         :key="index"
-        class="p-2 border-2 border-red-500 rounded-xl shadow-lg"
+        class="p-1 border-2 border-red-500 rounded-xl shadow-lg"
       >
         <div
           class="flex bg-[#C95792] shadow-md rounded-xl px-5 py-5 hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105 text-white"

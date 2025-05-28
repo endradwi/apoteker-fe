@@ -117,6 +117,12 @@ const onClick = async () => {
               Register
             </button>
           </form>
+          <p class="text-sm text-gray-500">
+            Sudah punya akun?
+            <NuxtLink to="/login" class="text-[#3D365C] underline"
+              >Login</NuxtLink
+            >
+          </p>
         </div>
       </div>
     </div>

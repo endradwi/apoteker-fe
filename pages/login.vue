@@ -36,7 +36,12 @@ const onClick = async () => {
     <div
       class="flex-1 bg-[#C95792]/90 rounded-r-[200px] shadow-xl shadow-[#3D365C]"
     >
-      <div class="flex items-center justify-center h-full">
+      <div class="flex flex-col items-center justify-center h-full">
+        <img
+          src="@/assets/Logogsu.png"
+          alt="Logo Perusahaan"
+          class="w-20 h-20"
+        />
         <div
           class="bg-white w-96 h-96 rounded-xl shadow-lg flex flex-col items-center justify-center gap-5"
         >
@@ -104,6 +109,12 @@ const onClick = async () => {
               Login
             </button>
           </form>
+          <p class="text-sm text-gray-500">
+            Belum punya akun?
+            <nuxt-link to="/register" class="text-[#3D365C] underline"
+              >Daftar</nuxt-link
+            >
+          </p>
         </div>
       </div>
     </div>

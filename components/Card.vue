@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import bidan from "@/assets/bidan.png";
-import trapis from "@/assets/bidan.png";
+import trapis from "@/assets/trapisbun.png";
 import kandungan from "@/assets/kandungan.png";
 
 const data = ref([
@@ -79,16 +79,12 @@ const data = ref([
       >
         <div
           class="flex bg-[#C95792] shadow-md rounded-xl px-5 py-5 hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105 text-white"
+          :class="[index === 0 ? 'py-[2rem]' : '']"
         >
           <div class="">
             <img :src="item.image" alt="" class="h-96" />
           </div>
-          <div
-            class="flex-1 text-left space-y-2"
-            :class="[
-              index === 2 ? 'flex flex-col justify-center' : 'inline-block',
-            ]"
-          >
+          <div class="flex-1 text-left space-y-2">
             <h1 class="text-xl font-bold">{{ item.title }}</h1>
             <div class="flex gap-10 items-center">
               <div>

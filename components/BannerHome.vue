@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Swal from "sweetalert2";
 const store = useUserStore();
 const router = useRouter();
 
@@ -7,8 +8,11 @@ async function onClick() {
   if (response) {
     router.push("/regis");
   } else {
-    // Handle profile retrieval error
-    alert("Failed to retrieve profile");
+    Swal.fire({
+      icon: "error",
+      title: "Ada kesalahan pada anda",
+      text: "Silahkan login terlebih dahulu",
+    });
   }
 }
 </script>

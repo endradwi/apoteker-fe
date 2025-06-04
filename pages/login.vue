@@ -6,6 +6,7 @@ definePageMeta({
 useSeoMeta({
   title: "Login Page",
 });
+import Swal from "sweetalert2";
 import { ref } from "vue";
 
 const email = ref("");
@@ -21,18 +22,39 @@ const togglePasswordVisibility = () => {
 const onClick = async () => {
   const response = await store.login(email.value, password.value);
   console.log("Registration successful = ", response);
-  if (response) {
-    // Redirect to login page after successful registration
-
+  if ((response as any).success !== false) {
     if ((response as any).results.role_id === 1) {
-      router.push("/admin");
+      Swal.fire({
+        icon: "success",
+        title: "Login Berhasil",
+        text: "Anda berhasil login sebagai Admin!",
+        timer: 3000,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      }).then(() => {
+        router.push("/admin");
+      });
     } else {
-      router.push("/");
+      Swal.fire({
+        icon: "success",
+        title: "Login Berhasil",
+        text: "Anda akan diarahkan ke halaman utama!",
+        timer: 3000,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      }).then(() => {
+        router.push("/");
+      });
     }
   } else {
-    // Handle registration error
-    console.error("Registration failed");
-    alert;
+    Swal.fire({
+      icon: "error",
+      title: "Login Gagal",
+      text: (response as any).message,
+      timer: 3000,
+      showConfirmButton: false,
+      timerProgressBar: true,
+    });
   }
 };
 </script>

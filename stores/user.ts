@@ -18,9 +18,13 @@ export const useUserStore = defineStore('user', {
 
         return data;
         
-      } catch (error) {
-        console.error('Failed to fetch user:', error);
+      } catch (error: any) { 
+        const message =
+          error?.data?.message
+        const success = error?.data?.success;
+        return { success, message };
       }
+      
     },
     async login(email: string, password: string) {
         const { post } = useHttp();
@@ -34,8 +38,11 @@ export const useUserStore = defineStore('user', {
   this.user = data; // simpan ke state jika perlu 
           return data;
           
-        } catch (error) {
-          console.error('Failed to fetch user:', error);
+        } catch (error: any) { 
+          const message =
+            error?.data?.message
+          const success = error?.data?.success;
+          return { success, message };
         }
       },
       async profile() {

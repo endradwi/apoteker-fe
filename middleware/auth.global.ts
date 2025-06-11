@@ -3,7 +3,7 @@ import Swal from "sweetalert2"
 export default defineNuxtRouteMiddleware((to) => {
   const token = useCookie('token')
   const isProtected =
-    to.path === '/regis' || to.path === '/history' || to.path.startsWith('/admin')
+    to.path === '/regis' || to.path === '/history' || to.path === '/profile' || to.path.startsWith('/admin')
 
   if (isProtected && !token.value) {
     if (process.client) {

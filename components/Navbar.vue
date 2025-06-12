@@ -135,7 +135,7 @@ onMounted(() => {
       <button
         class="absolute bottom-[-900px] left-5 z-50 bg-green-500 text-white p-2 rounded-xl rounded flex items-center gap-2 hover:bg-green-600 transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-white"
       >
-        Chat with us
+        Butuh Bantuan?
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="31.76"

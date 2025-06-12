@@ -57,7 +57,13 @@ onMounted(() => {
 </script>
 <template>
   <div class="w-screen h-screen flex flex-col py-24 px-52 gap-10">
-    <h1 class="text-5xl font-black">Akun User</h1>
+    <div class="w-full flex justify-between items-center">
+      <h1 class="text-5xl font-black">Akun User</h1>
+      <button class="bg-slate-200 rounded-lg p-3 font-bold hover:bg-slate-500">
+        Tambah Admin Baru
+      </button>
+      <ModalCreateAdmin />
+    </div>
     <table>
       <thead>
         <tr>

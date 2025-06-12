@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import Swal from "sweetalert2";
+import type { reserveResponse } from "~/types/user";
+
 const name = ref("");
 const phone_number = ref("");
 const age = ref("");
@@ -37,16 +40,32 @@ async function reserve() {
     doctor: doctor.value,
     complaint: complaint.value,
   };
-  const response = await store.reserve(
+  const response = (await store.reserve(
     data.name,
     data.phone_number,
     data.age,
     data.date,
     data.doctor,
     data.complaint
-  );
-  console.log("data response=", response);
-  console.log("Form data = ", data);
+  )) as reserveResponse;
+  console.log("Reservation response: ", response);
+  Swal.fire({
+    icon: response?.success ? "success" : "error",
+    text: "Pendaftaran Berhasil, Silahkan datang sesuai tanggal yang telah dipilih",
+    timer: 5000,
+    showConfirmButton: false,
+    timerProgressBar: true,
+  }).then(() => {
+    if (response?.success) {
+      name.value = "";
+      phone_number.value = "";
+      age.value = "";
+      date.value = "";
+      doctor.value = "";
+      complaint.value = "";
+      arrow.value = false;
+    }
+  });
 }
 </script>
 <template>
@@ -58,7 +77,7 @@ async function reserve() {
       <form @submit.prevent="reserve" class="flex gap-5">
         <div class="flex flex-col gap-5 w-full">
           <div class="flex flex-col">
-            <label for="fullname">Full name</label>
+            <label for="fullname">Nama Lengkap</label>
             <input
               type="text"
               v-model="name"
@@ -68,7 +87,7 @@ async function reserve() {
             />
           </div>
           <div class="flex flex-col">
-            <label for="phone_number">Phone Number</label>
+            <label for="phone_number">No Telepon</label>
             <input
               type="text"
               v-model="phone_number"
@@ -78,7 +97,7 @@ async function reserve() {
             />
           </div>
           <div class="flex flex-col">
-            <label for="age">Age</label>
+            <label for="age">Umur</label>
             <input
               type="text"
               v-model="age"
@@ -88,12 +107,7 @@ async function reserve() {
             />
           </div>
           <div class="flex flex-col">
-            <label for="date"
-              >Date
-              <span class="text-red-500 text-[12px]"
-                >(*Pilih tanggal berobat)</span
-              ></label
-            >
+            <label for="date">Piih Tanggal Berobat</label>
             <div @click="openDatePicker" class="cursor-pointer w-full">
               <input
                 type="date"
@@ -106,7 +120,7 @@ async function reserve() {
           </div>
 
           <div class="relative">
-            <label for="doctor">Dokter</label>
+            <label for="doctor">Pilih Dokter</label>
             <div
               class="border border-black rounded-md py-3 px-5 cursor-pointer flex justify-between items-center"
               @click="toggleArrow"
@@ -149,10 +163,11 @@ async function reserve() {
           </div>
 
           <div class="flex flex-col">
-            <label for="complaint">Keluhan</label>
+            <label for="complaint">Masukan Keluhan</label>
             <input
               type="text"
               v-model="complaint"
+              placeholder="Masukan Keluhan"
               id="complaint"
               class="border border-black rounded-md py-3 px-5"
             />

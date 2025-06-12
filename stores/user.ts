@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import useHttp from '@/composables/useHttp';
+import type { createAdmin } from '~/types/user';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -163,6 +164,22 @@ export const useUserStore = defineStore('user', {
           console.error('❌ Failed to fetch profile:', error);
           return null;
         }
-      },      
+      },
+      async createAdmin(createAdmin:createAdmin){
+        const { post } = useHttp();
+        try {
+          const data = await post('users/admin', createAdmin, {
+            credentials: 'include',
+          });
+  
+          return data;
+          
+        } catch (error: any) { 
+          const message =
+            error?.data?.message
+          const success = error?.data?.success;
+          return { success, message };
+      }      
+  },
   },
 });

@@ -10,3 +10,25 @@ export type UserSession = {
     created_at: string | Date;
     updated_at: string | Date;
 };
+
+export type reserveResponse = {
+    success: boolean;
+    message: string;
+    results: {
+        id: number;
+        fullname: string;
+        phone_number: string;
+        age: string;
+        date: string | Date;
+        doctor: string;
+        complaint: string;
+    }[];
+}
+
+export type createAdmin = {
+    full_name: string;
+    email: string;
+    password: string;
+    phone_number: string;
+    role_id: number;
+}

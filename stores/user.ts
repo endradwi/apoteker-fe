@@ -124,11 +124,12 @@ export const useUserStore = defineStore("user", {
         console.error("Failed to fetch user:", error);
       }
     },
-    async allUser() {
+    async allUser(page = 1) {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
         const data = await get("users/all", {
+          query : { page},
           credentials: "include",
         });
 

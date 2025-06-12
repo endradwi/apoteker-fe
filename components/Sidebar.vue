@@ -1,5 +1,14 @@
 <script setup lang="ts">
 const route = useRoute();
+const router = useRouter();
+const store = useUserStore();
+const logout = async () => {
+  const token = useCookie("token");
+  token.value = null;
+  store.$reset();
+  router.push("/");
+  // location.reload();
+};
 </script>
 <template>
   <aside class="bg-[#C95792] w-52 pt-10">
@@ -50,6 +59,12 @@ const route = useRoute();
           Pendaftaran
         </li></NuxtLink
       >
+      <li
+        @click="logout"
+        class="bg-red-500 pl-5 py-3 rounded-lg hover:bg-red-300 font-bold border-2 border-red-500 text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+      >
+        Logout
+      </li>
     </ul>
   </aside>
 </template>

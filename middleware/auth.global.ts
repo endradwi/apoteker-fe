@@ -25,9 +25,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (token.value && to.path.startsWith('/admin')) {
     const store = useUserStore()
     const data = await store.profile() as { results?: { role_id: number } }
-
-    console.log("data profile=", data)
-
     if (data?.results?.role_id !== 1) {
       if (process.client) {
         await Swal.fire({

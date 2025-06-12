@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 const store = useUserStore();
-const fullname = ref("");
+const full_name = ref("");
 const phone_number = ref("");
 const email = ref("");
 const password = ref("");
 const role_id = ref(1); // Default to Admin role
 async function createAdmin() {
   const response = await store.createAdmin({
-    full_name: fullname.value,
+    fullname: full_name.value,
     phone_number: phone_number.value,
     email: email.value,
     password: password.value,
@@ -19,6 +19,9 @@ async function createAdmin() {
     console.error("Failed to create admin");
   }
 }
+// onMounted(() => {
+//   createAdmin();
+// });
 </script>
 <template>
   <div class="absolute top-44 right-[750px]">
@@ -26,11 +29,11 @@ async function createAdmin() {
       class="bg-white p-6 rounded-lg shadow-lg w-96 shadow shadow-lg shadow-slate-500"
     >
       <h2 class="text-xl font-bold mb-4">Tambah Admin</h2>
-      <form @submit.prevent="$emit('submit')">
+      <form @submit.prevent="createAdmin">
         <div class="mb-4">
           <label class="block font-bold mb-1">Nama Lengkap</label>
           <input
-            v-model="fullname"
+            v-model="full_name"
             type="text"
             required
             class="border border-gray-300 p-2 rounded w-full"

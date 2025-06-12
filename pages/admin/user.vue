@@ -18,6 +18,8 @@ const editOpen = ref(false);
 const role = ref(0);
 const selectedUser = ref<User | null>(null);
 const store = useUserStore();
+const modalCreateOpen = ref(false);
+
 async function getAllUser() {
   const response = (await store.allUser()) as any;
   if (response && Array.isArray(response.results)) {
@@ -51,6 +53,10 @@ async function editProfile() {
   // console.log("Profile data = ", response);
 }
 
+function toggleOpenModalCreate() {
+  modalCreateOpen.value = !modalCreateOpen.value;
+}
+
 onMounted(() => {
   getAllUser();
 });
@@ -59,10 +65,13 @@ onMounted(() => {
   <div class="w-screen h-screen flex flex-col py-24 px-52 gap-10">
     <div class="w-full flex justify-between items-center">
       <h1 class="text-5xl font-black">Akun User</h1>
-      <button class="bg-slate-200 rounded-lg p-3 font-bold hover:bg-slate-500">
+      <button
+        @click="toggleOpenModalCreate"
+        class="bg-slate-200 rounded-lg p-3 font-bold hover:bg-slate-500"
+      >
         Tambah Admin Baru
       </button>
-      <ModalCreateAdmin />
+      <ModalCreateAdmin v-if="modalCreateOpen" @close="toggleOpenModalCreate" />
     </div>
     <table>
       <thead>
@@ -76,8 +85,8 @@ onMounted(() => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user.id">
-          <td class="border border-black py-2 pl-4">{{ user.id }}</td>
+        <tr v-for="(user, index) in users" :key="user.id">
+          <td class="border border-black py-2 pl-4">{{ index + 1 }}</td>
           <td class="border border-black py-2 pl-4">{{ user.fullname }}</td>
           <td class="border border-black py-2 pl-4">{{ user.phone_number }}</td>
           <td class="border border-black py-2 pl-4">{{ user.email }}</td>

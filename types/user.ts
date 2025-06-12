@@ -26,7 +26,7 @@ export type reserveResponse = {
 }
 
 export type createAdmin = {
-    full_name: string;
+    fullname: string;
     email: string;
     password: string;
     phone_number: string;

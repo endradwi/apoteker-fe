@@ -42,9 +42,20 @@ function toggleCreateAdmin() {
   modalOpenEditUser.value = false;
   modalOpenCreateAdmin.value = !modalOpenCreateAdmin.value;
 }
+async function deleteUser(user: User) {
+  const response = await store.deleteUser(user.id);
+  if (response) {
+    console.log("delete user response=", user);
+    console.log("User deleted successfully");
+    getAllUser(currentPage.value); // Refresh the user list
+  } else {
+    console.error("Failed to delete user");
+  }
+  // console.log("users data deleted=", deleteUser(users.value[0]));
+}
 
 onMounted(() => {
-  getAllUser();
+  getAllUser(); // Example usage, remove this line in production
 });
 </script>
 <template>
@@ -79,7 +90,10 @@ onMounted(() => {
             {{ user.role_id === 1 ? "Admin" : "Users" }}
           </td>
           <td class="border border-black py-2 space-x-2 text-center">
-            <button class="bg-red-500 text-white py-1 px-3 rounded">
+            <button
+              @click="deleteUser(user)"
+              class="bg-red-500 text-white py-1 px-3 rounded"
+            >
               Delete
             </button>
             <button

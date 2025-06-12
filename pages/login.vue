@@ -21,7 +21,6 @@ const togglePasswordVisibility = () => {
 
 const onClick = async () => {
   const response = await store.login(email.value, password.value);
-  console.log("Registration successful = ", response);
   if ((response as any).success !== false) {
     if ((response as any).results.role_id === 1) {
       Swal.fire({

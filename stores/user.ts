@@ -202,6 +202,20 @@ export const useUserStore = defineStore("user", {
         console.error("❌ Failed to fetch profile:", error);
         return null;
       }
+    },
+    async deleteUser(id: number) {
+      const { del } = useHttp(); // gunakan del untuk DELETE request
+
+      try {
+        const data = await del(`users/${id}`, {
+          credentials: "include",
+        });
+
+        return data; // bisa mengembalikan data atau status sukses
+      } catch (error) {
+        console.error("❌ Failed to delete user:", error);
+        return null;
+      }
     }
   },
 });

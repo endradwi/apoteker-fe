@@ -36,7 +36,7 @@ export const useUserStore = defineStore("user", {
             password,
           },
           {
-            credetials: "include",
+            credentials: "include",
           }
         );
         this.user = data; // simpan ke state jika perlu
@@ -115,7 +115,7 @@ export const useUserStore = defineStore("user", {
             complaint,
           },
           {
-            credetials: "include",
+            credentials: "include",
           }
         );
         this.user = data; // simpan ke state jika perlu

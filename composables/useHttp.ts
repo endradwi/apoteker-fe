@@ -3,12 +3,8 @@ import type { UserSession } from "@/types/user";
 
 export default function useHttp() {
   const config = useRuntimeConfig();
-  const token = useCookie<string>("token", {
-    domain: config.public.cookieDomain as string,
-    secure: true,
-    sameSite: "none"
-  });
-  console.log("Token:", token.value);
+
+  // Hanya ambil user ID untuk header tambahan (tidak wajib jika backend tidak perlu)
   const user = useCookie<UserSession>("user", {
     domain: config.public.cookieDomain as string,
     secure: true,
@@ -17,17 +13,18 @@ export default function useHttp() {
 
   const fetcher = $fetch.create({
     baseURL: config.public.apiUrl as string,
-    credentials: "include",
+    credentials: "include", // ini penting agar browser kirim cookie
     onRequest({ options }) {
       options.headers = {
         ...options.headers,
-        Authorization: `Bearer ${token.value}`,
-        USER_ID: user.value?.id || '',
+        // Authorization tidak diperlukan karena token sudah di cookie
+        // USER_ID bisa dihilangkan jika tidak digunakan oleh backend
+        // USER_ID: user.value?.id || '',
       };
     },
     onResponseError({ response }) {
       if (response.status === 401) {
-        console.error("Unauthorized");
+        console.error("❌ Unauthorized");
       }
     }
   });

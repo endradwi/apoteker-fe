@@ -4,9 +4,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const token = useCookie('token')
   const isProtected =
     to.path === '/regis' || to.path === '/history' || to.path === '/profile' || to.path.startsWith('/admin')
+console.log("token from middleware:", token.value)
 
   // ⛔ Tidak ada token tapi akses halaman protected
-  if (isProtected && !token.value) {
+  if (!token.value && isProtected ) {
     if (process.client) {
       await Swal.fire({
         icon: 'warning',

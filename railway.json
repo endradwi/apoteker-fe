@@ -1,4 +1,9 @@
 {
-    "build": "npm run build",
-    "start": "npm run preview"
+    "build": {
+      "command": "npm run build"
+    },
+    "start": {
+      "command": "npm run preview"
+    }
   }
+  

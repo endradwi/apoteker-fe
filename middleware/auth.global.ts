@@ -1,7 +1,7 @@
 import Swal from "sweetalert2"
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (process.server) return // ⛔ skip di server
+  // if (process.server) return // ⛔ skip di server
 
   const token = useCookie('token')
   const isProtected =

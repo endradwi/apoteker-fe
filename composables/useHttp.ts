@@ -11,6 +11,8 @@ export default function useHttp() {
     sameSite: "none"
   });
 
+  console.log("User from cookie:", user.value);
+
   const fetcher = $fetch.create({
     baseURL: config.public.apiUrl as string,
     credentials: "include", // ini penting agar browser kirim cookie

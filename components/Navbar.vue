@@ -25,6 +25,7 @@ async function profile() {
 }
 const logout = async () => {
   const token = useCookie("token");
+  console.log("token logout", token.value);
   token.value = null;
   store.$reset();
   profileData.value = false;

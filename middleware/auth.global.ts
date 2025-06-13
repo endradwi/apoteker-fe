@@ -1,25 +1,25 @@
 import Swal from "sweetalert2"
 
 export default defineNuxtRouteMiddleware(async (to) => {
+  if (process.server) return // ⛔ skip di server
+
   const token = useCookie('token')
   const isProtected =
     to.path === '/regis' || to.path === '/history' || to.path === '/profile' || to.path.startsWith('/admin')
-console.log("token from middleware:", token.value)
+
+  console.log("token from middleware:", token.value)
 
   // ⛔ Tidak ada token tapi akses halaman protected
   if (!token.value && isProtected ) {
-    if (process.client) {
-      await Swal.fire({
-        icon: 'warning',
-        title: 'Akses Ditolak',
-        text: 'Anda harus login terlebih dahulu untuk mengakses halaman ini.',
-        timer: 3000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      })
-      window.location.href = '/'
-    }
-    return abortNavigation()
+    await Swal.fire({
+      icon: 'warning',
+      title: 'Akses Ditolak',
+      text: 'Anda harus login terlebih dahulu untuk mengakses halaman ini.',
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    })
+    return navigateTo('/')
   }
 
   // ✅ Jika ada token, cek role
@@ -27,18 +27,15 @@ console.log("token from middleware:", token.value)
     const store = useUserStore()
     const data = await store.profile() as { results?: { role_id: number } }
     if (data?.results?.role_id !== 1) {
-      if (process.client) {
-        await Swal.fire({
-          icon: 'warning',
-          title: 'Akses Ditolak',
-          text: 'Halaman ini hanya bisa diakses oleh admin.',
-          timer: 3000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        })
-        window.location.href = '/'
-      }
-      return abortNavigation()
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Akses Ditolak',
+        text: 'Halaman ini hanya bisa diakses oleh admin.',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      })
+      return navigateTo('/')
     }
   }
 })

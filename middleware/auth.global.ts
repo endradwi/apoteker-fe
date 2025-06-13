@@ -8,7 +8,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
     sameSite: 'lax',
     secure: true
   })
-  console.log('[middleware] Token from cookie:', useCookie('token').value)
 
   console.log("Token from client cookie:", token.value)
   const isProtected =
@@ -45,4 +44,5 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo('/')
     }
   }
+  
 })

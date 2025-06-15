@@ -4,7 +4,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (process.server) return  // ✅ Hindari SSR
 
   const token = useCookie('token')
-  console.log("Cookies from document:", document.cookie)
 
   console.log("Token from client cookie:", token.value)
   const isProtected =

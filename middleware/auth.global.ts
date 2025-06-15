@@ -3,7 +3,10 @@ import Swal from "sweetalert2"
 export default defineNuxtRouteMiddleware(async (to) => {
   if (process.server) return  // Hindari SSR
 
-  const token = useCookie('token', { sameSite: 'none' })  // Optional
+  const token = useCookie('token', {
+    sameSite: 'none',
+    secure: true,
+  })
   console.log("Token from client cookie:", token.value)
 
   const isProtected =

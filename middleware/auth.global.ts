@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     sameSite: 'none',
     secure: true,
   })
-  console.log("Cek Token:", document.cookie.includes('token='))
+  console.log("Cek Token:", document.cookie.includes('token'))
   console.log("Token from client cookie:", token.value)
 
   const isProtected =

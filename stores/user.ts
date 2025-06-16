@@ -5,7 +5,7 @@ import type { createAdmin } from "~/types/user";
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null as any,
-    token: "" as string, // Simpan token jika perlu
+    token: null as any, // Simpan token jika perlu
   }),
   actions: {
     async register(email: string, password: string) {

@@ -11,6 +11,8 @@ export const useCredentialsStore = defineStore("credentials", {
         const token = localStorage.getItem("token");
         if (token) {
           this.token = token;
+        } else {
+          this.token = "";
         }
       },
       clearToken() {

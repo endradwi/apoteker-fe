@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const isProtected =
     ['/regis', '/history', '/profile'].includes(to.path) || to.path.startsWith('/admin')
 
-  if (!tokenFromLocalStorage || !tokenFromCookie.value && isProtected) {
+  if (tokenFromLocalStorage === "" || !tokenFromCookie.value && isProtected) {
     await Swal.fire({
       icon: 'warning',
       title: 'Akses Ditolak',
@@ -22,7 +22,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo('/')
   }
 
-  if (tokenFromLocalStorage || tokenFromCookie.value  && to.path.startsWith('/admin')) {
+  if (tokenFromLocalStorage !== "" || tokenFromCookie.value  && to.path.startsWith('/admin')) {
     const store = useUserStore()
     const data = await store.profile() as { results?: { role_id: number } }
     if (data.results?.role_id !== 1) {

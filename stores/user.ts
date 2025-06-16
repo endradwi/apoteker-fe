@@ -39,9 +39,10 @@ export const useUserStore = defineStore("user", {
           {
             credentials: "include",
           }
-        );
+        ) as any;
         this.user = data; // simpan ke state jika perlu
-        this.token = this.user; // simpan token jika perlu
+        this.token = data?.results.token; // simpan token jika perlu
+        console.log("User tokern after login:", this.token);
         console.log("User data after login:", this.user);
         return data;
       } catch (error: any) {

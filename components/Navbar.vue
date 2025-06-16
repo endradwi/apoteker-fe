@@ -39,7 +39,9 @@ onMounted(() => {
 </script>
 <template>
   <div class="w-full h-full mb-2 shadow-xl sticky top-0 bg-white z-50">
-    <div class="flex justify-between items-center px-32 py-2">
+    <div
+      class="flex lg:flex-row flex-col lg:gap-0 gap-5 justify-between items-center px-32 py-2"
+    >
       <nuxt-link to="/">
         <img
           src="../assets/Logogsu.png"
@@ -135,9 +137,9 @@ onMounted(() => {
     </div>
     <NuxtLink to="https://wa.me/6281330770221">
       <button
-        class="absolute bottom-[-900px] left-5 z-50 bg-green-500 text-white p-2 rounded-xl rounded flex items-center gap-2 hover:bg-green-600 transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-white"
+        class="absolute bottom-[-700px] lg:bottom-[-900px] left-10 lg:left-5 z-50 bg-green-500 text-white p-2 rounded-xl rounded flex items-center gap-2 hover:bg-green-600 transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-white"
       >
-        Butuh Bantuan?
+        <span class="hidden lg:block">Butuh Bantuan?</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="31.76"

@@ -18,9 +18,9 @@ async function onClick() {
 </script>
 <template>
   <section
-    class="flex items-center justify-between px-20 py-10 rounded-2xl bg-gradient-to-r from-white to-[#C95792] mx-10 shadow-2xl"
+    class="flex lg:flex-row flex-col items-center justify-between px-5 lg:px-20 py-10 rounded-2xl bg-gradient-to-r from-white to-[#C95792] mx-2 lg:mx-10 shadow-2xl"
   >
-    <div class="flex-1 space-y-5">
+    <div class="flex-1 space-y-5 text-center lg:text-left">
       <h1 class="text-5xl font-bold">
         Selamat Datang di Praktek Bidan Istiadah
       </h1>

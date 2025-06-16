@@ -57,7 +57,7 @@ const onClick = async () => {
 </script>
 <template>
   <div class="w-screen h-screen flex">
-    <div class="flex-1 flex items-end mt-32">
+    <div class="flex-1 lg:block items-end mt-32 hidden">
       <img
         src="@/assets/regisDoc.png"
         alt="Register Dockter"
@@ -65,7 +65,7 @@ const onClick = async () => {
       />
     </div>
     <div
-      class="flex-1 bg-[#C95792]/90 rounded-l-[200px] shadow-2xl shadow-[#3D365C]"
+      class="flex-1 bg-[#C95792]/90 lg:rounded-l-[200px] shadow-2xl shadow-[#3D365C]"
     >
       <div class="flex flex-col items-center justify-center h-full">
         <img

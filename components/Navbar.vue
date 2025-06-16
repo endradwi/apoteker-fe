@@ -24,9 +24,10 @@ async function profile() {
   }
 }
 const logout = async () => {
-  const token = useCookie("token");
-  console.log("token logout", token.value);
-  token.value = null;
+  const tokenFromCookie = useCookie("token");
+  // token.value = null;
+  const creadential = useCredentialsStore();
+  creadential.clearToken();
   store.$reset();
   profileData.value = false;
   router.push("/");

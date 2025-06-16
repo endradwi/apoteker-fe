@@ -7,16 +7,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const credentialsStore = useCredentialsStore()
   credentialsStore.loadToken() // Memuat token dari localStorage jika ada
   const tokenFromLocalStorage = credentialsStore.token
-  if (tokenFromLocalStorage) {
-    console.log("Token from localStorage:", tokenFromLocalStorage)
-  }else {
-    console.log("No token found in localStorage: ", tokenFromLocalStorage)
-  }
   
   const isProtected =
     ['/regis', '/history', '/profile'].includes(to.path) || to.path.startsWith('/admin')
-
-  if (!tokenFromCookie.value && isProtected) {
+// Jika Domai sama gunakan cookie
+  if (!tokenFromLocalStorage && isProtected) { 
     await Swal.fire({
       icon: 'warning',
       title: 'Akses Ditolak',
@@ -27,7 +22,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo('/')
   }
 
-  if (tokenFromCookie.value  && to.path.startsWith('/admin')) {
+  if (tokenFromLocalStorage && to.path.startsWith('/admin')) {
     const store = useUserStore()
     const data = await store.profile() as { results?: { role_id: number } }
     if (data.results?.role_id !== 1) {

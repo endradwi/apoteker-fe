@@ -30,22 +30,17 @@ export const useUserStore = defineStore("user", {
     async login(email: string, password: string) {
       const { post } = useHttp();
       try {
-        const data = await post(
-          "auth/login",
-          {
-            email,
-            password,
-          },
-          {
-            credentials: "include",
-          }
-        ) as any;
-        this.user = data; // simpan ke state jika perlu
-        this.token = data?.results.token; // simpan token jika perlu
+        const data = await post("auth/login", { email, password }, { credentials: "include" }) as any;
+
+        this.user = data;
+
+        const token = data?.results?.token;
         const credentialsStore = useCredentialsStore();
-        credentialsStore.setToken(this.token); // simpan token ke credentials store
-        console.log("User Credentials Store:", credentialsStore.token);
-        console.log("User tokern after login:", this.token);
+        credentialsStore.setToken(token); // simpan token ke credentials store
+
+        console.log("User token:", credentialsStore.token);
+
+        console.log("User token after login:", token);
         console.log("User data after login:", this.user);
         return data;
       } catch (error: any) {

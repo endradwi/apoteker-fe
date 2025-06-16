@@ -42,6 +42,9 @@ export const useUserStore = defineStore("user", {
         ) as any;
         this.user = data; // simpan ke state jika perlu
         this.token = data?.results.token; // simpan token jika perlu
+        const credentialsStore = useCredentialsStore();
+        credentialsStore.setToken(this.token); // simpan token ke credentials store
+        console.log("User Credentials Store:", credentialsStore.token);
         console.log("User tokern after login:", this.token);
         console.log("User data after login:", this.user);
         return data;

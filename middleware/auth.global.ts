@@ -6,6 +6,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const tokenFromCookie = useCookie('token')
   const tokenFromLocalStorage = useCredentialsStore().loadToken()
   console.log('Token from cookie:', tokenFromCookie.value)
+  console.log('Token from local storage:', tokenFromLocalStorage)
 
   const isProtected =
     ['/regis', '/history', '/profile'].includes(to.path) || to.path.startsWith('/admin')

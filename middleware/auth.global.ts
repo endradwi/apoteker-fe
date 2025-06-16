@@ -4,7 +4,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (process.server) return  // Hindari SSR
 
   const tokenFromCookie = useCookie('token')
-  const tokenFromLocalStorage = useCredentialsStore().loadToken()
+  const credentialsStore = useCredentialsStore()
+  credentialsStore.loadToken() // Memuat token dari localStorage jika ada
+  const tokenFromLocalStorage = credentialsStore.token
   console.log('Token from cookie:', tokenFromCookie.value)
   console.log('Token from local storage:', tokenFromLocalStorage)
 

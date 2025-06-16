@@ -5,6 +5,7 @@ import type { createAdmin } from "~/types/user";
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null as any,
+    token: "" as string, // Simpan token jika perlu
   }),
   actions: {
     async register(email: string, password: string) {
@@ -40,6 +41,8 @@ export const useUserStore = defineStore("user", {
           }
         );
         this.user = data; // simpan ke state jika perlu
+        this.token = this.user; // simpan token jika perlu
+        console.log("User data after login:", this.user);
         return data;
       } catch (error: any) {
         const message = error?.data?.message;

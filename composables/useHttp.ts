@@ -1,29 +1,24 @@
 // composables/useHttp.ts
-import type { UserSession } from "@/types/user";
+import { useCredentialsStore } from "@/stores/credentials";
 
 export default function useHttp() {
   const config = useRuntimeConfig();
-
-  // Hanya ambil user ID untuk header tambahan (tidak wajib jika backend tidak perlu)
-  const user = useCookie<UserSession>("user", {
-    domain: config.public.cookieDomain as string,
-    secure: true,
-    sameSite: "none"
-  });
-
-  console.log("User from cookie:", user.value);
+  const credentialsStore = useCredentialsStore();
+  const token = credentialsStore.token || localStorage.getItem("token");
 
   const fetcher = $fetch.create({
     baseURL: config.public.apiUrl as string,
-    credentials: "include", // ini penting agar browser kirim cookie
+    credentials: "omit", // karena kita pakai Authorization, bukan cookie
+    headers: {} as Record<string, string>, // <- paksa di sini
     onRequest({ options }) {
-      options.headers = {
-        ...options.headers,
-        // Authorization tidak diperlukan karena token sudah di cookie
-        // USER_ID bisa dihilangkan jika tidak digunakan oleh backend
-        // USER_ID: user.value?.id || '',
-      };
-    },
+      const headers = new Headers();
+  
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+  
+      options.headers = headers;
+    },   
     onResponseError({ response }) {
       if (response.status === 401) {
         console.error("❌ Unauthorized");

@@ -11,14 +11,10 @@ export const useUserStore = defineStore("user", {
     async register(email: string, password: string) {
       const { post } = useHttp();
       try {
-        const data = await post(
-          "auth/register",
-          {
-            email,
-            password,
-          },
-          { credentials: "include" }
-        );
+        const data = await post("auth/register", {
+          email,
+          password,
+        });
 
         return data;
       } catch (error: any) {
@@ -30,7 +26,7 @@ export const useUserStore = defineStore("user", {
     async login(email: string, password: string) {
       const { post } = useHttp();
       try {
-        const data = await post("auth/login", { email, password }, { credentials: "include" }) as any;
+        const data = (await post("auth/login", { email, password })) as any;
 
         this.user = data;
 
@@ -53,9 +49,7 @@ export const useUserStore = defineStore("user", {
       const { get } = useHttp();
 
       try {
-        const data = await get("users", {
-          credentials: "include",
-        });
+        const data = await get("users");
 
         this.user = data; // simpan ke state jika perlu
         return data;
@@ -85,7 +79,6 @@ export const useUserStore = defineStore("user", {
 
       try {
         const data = await patch("users", formData, {
-          credentials: "include",
           // ❌ Jangan set Content-Type secara manual! Biarkan browser handle.
         });
 
@@ -116,9 +109,7 @@ export const useUserStore = defineStore("user", {
             doctor,
             complaint,
           },
-          {
-            credentials: "include",
-          }
+      
         );
         this.user = data; // simpan ke state jika perlu
         return data;
@@ -131,8 +122,7 @@ export const useUserStore = defineStore("user", {
 
       try {
         const data = await get("users/all", {
-          query : { page},
-          credentials: "include",
+          query: { page },
         });
 
         this.user = data; // simpan ke state jika perlu
@@ -150,7 +140,6 @@ export const useUserStore = defineStore("user", {
 
       try {
         const data = await patch(`users/${id}`, formData, {
-          credentials: "include",
           // ❌ Jangan set Content-Type secara manual! Biarkan browser handle.
         });
 
@@ -165,9 +154,7 @@ export const useUserStore = defineStore("user", {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
-        const data = await get("reserve/all/reserve/users", {
-          credentials: "include",
-        });
+        const data = await get("reserve/all/reserve/users");
 
         this.user = data; // simpan ke state jika perlu
         return data;
@@ -179,9 +166,7 @@ export const useUserStore = defineStore("user", {
     async createAdmin(createAdmin: createAdmin) {
       const { post } = useHttp();
       try {
-        const data = await post("users/admin", createAdmin, {
-          credentials: "include",
-        });
+        const data = await post("users/admin", createAdmin);
 
         return data;
       } catch (error: any) {
@@ -194,9 +179,7 @@ export const useUserStore = defineStore("user", {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
-        const data = await get("reserve/all/reserve/admin", {
-          credentials: "include",
-        });
+        const data = await get("reserve/all/reserve/admin");
 
         this.user = data; // simpan ke state jika perlu
         return data;
@@ -209,15 +192,13 @@ export const useUserStore = defineStore("user", {
       const { del } = useHttp(); // gunakan del untuk DELETE request
 
       try {
-        const data = await del(`users/${id}`, {
-          credentials: "include",
-        });
+        const data = await del(`users/${id}`);
 
         return data; // bisa mengembalikan data atau status sukses
       } catch (error) {
         console.error("❌ Failed to delete user:", error);
         return null;
       }
-    }
+    },
   },
 });

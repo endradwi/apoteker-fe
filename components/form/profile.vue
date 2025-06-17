@@ -48,6 +48,7 @@ async function profile() {
 watch(image, (newImage) => {
   if (newImage) {
     previewUrl.value = URL.createObjectURL(newImage);
+    console.log("Image updated:", previewUrl.value);
   }
 });
 onMounted(() => {
@@ -55,15 +56,15 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="flex flex-col gap-5 mx-96 my-28">
-    <h1 class="text-5xl font-bold">Hello, People</h1>
+  <div class="flex flex-col gap-5 mx-2 my-10 lg:mx-96 lg:my-28">
+    <h1 class="text-4xl lg:text-5xl font-bold">Hello, {{ name }}</h1>
     <section
       class="px-5 py-10 rounded-2xl border-2 border-[#C95792] shadow-xl shadow-[#3D365C]"
     >
       <form @submit.prevent="editProfile" class="flex gap-5">
         <!-- Avatar Upload with Hover Camera Icon -->
         <div
-          class="group border border-black relative overflow-hidden w-44 h-36 rounded-full text-center flex items-center justify-center hover:bg-black/50 transition-all duration-300 ease-in-out cursor-pointer"
+          class="group border border-black relative overflow-hidden w-28 h-20 lg:w-44 lg:h-36 rounded-full text-center flex items-center justify-center hover:bg-black/50 transition-all duration-300 ease-in-out cursor-pointer"
           @click="triggerFileInput"
         >
           <!-- Profile Icon -->
@@ -85,6 +86,7 @@ onMounted(() => {
             />
           </svg>
           <img
+            class="object-cover rounded-full w-full h-full bg-no-repeat bg-center ml-[-78px] lg:ml-[-148px]"
             v-else
             :src="`http://localhost:8889/profile/image/${image?.name}`"
           />

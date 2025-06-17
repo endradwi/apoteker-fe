@@ -9,9 +9,9 @@ const date = ref("");
 const doctor = ref("");
 const complaint = ref("");
 const doctorList = ref([
-  { id: 1, name: "dr. Andi" },
-  { id: 2, name: "dr. Budi" },
-  { id: 3, name: "dr. Citra" },
+  { id: 1, name: "Bidan istiadah S.Tr.Keb - Kepala Bidan dan Ceo" },
+  { id: 2, name: "Dr. Femmy Dzulkarnaen, SpOG - Dokter Spesialis Kandungan" },
+  { id: 3, name: "Lilis S.Pd - Kepala Trapis" },
 ]);
 const arrow = ref(false);
 const doctorSelect = ref<HTMLSelectElement | null>(null);
@@ -69,8 +69,8 @@ async function reserve() {
 }
 </script>
 <template>
-  <div class="flex flex-col gap-5 mx-96 my-28">
-    <h1 class="text-5xl font-bold">Pendaftaran Pasien</h1>
+  <div class="flex flex-col gap-5 mx-2 my-10 lg:mx-96 lg:my-28">
+    <h1 class="text-4xl lg:text-5xl font-bold">Pendaftaran Pasien</h1>
     <section
       class="px-5 py-10 rounded-2xl border-2 border-[#C95792] shadow-xl shadow-[#3D365C]"
     >

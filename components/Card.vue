@@ -5,7 +5,7 @@ import kandungan from "@/assets/kandungan.png";
 
 const data = ref([
   {
-    title: "Bidan",
+    title: "Bidan istiadah S.Tr.Keb - Kepala Bidan dan owner",
     description: [
       "Imunisasi Bayi (HB-0, DPT, IPV, POLIO, PCV, Campak)",
       "Imunisasi Tetanus, Periksa Hamil (ANC)",
@@ -27,7 +27,7 @@ const data = ref([
     time2: "Persalinan 24 Jam",
   },
   {
-    title: "Trapis",
+    title: "Lilis S.Pd - Kepala Trapis",
     description: [
       "Pijat Laktasi",
       "Pijat Nifas (Pijat Setelah Lahiran)",
@@ -57,7 +57,7 @@ const data = ref([
     time2: "09.00 - 15.00",
   },
   {
-    title: "Dokter Kandungan",
+    title: "Dr. Femmy Dzulkarnaen, SpOG - Dokter Spesialis Kandungan",
     description: ["USG", "Konsultasi Kehamilan", "Program Kamil", "Pasang IUD"],
     image: kandungan,
     day: "Jumat",

@@ -78,13 +78,17 @@ const data = ref([
         class="p-1 border-2 border-red-500 rounded-xl shadow-lg"
       >
         <div
-          class="flex bg-[#C95792] shadow-md rounded-xl px-5 py-5 hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105 text-white"
+          class="flex lg:flex-row flex-col bg-[#C95792] shadow-md rounded-xl px-5 py-5 hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105 text-white"
           :class="[index === 0 ? 'py-[2rem]' : '']"
         >
-          <div class="">
-            <img :src="item.image" alt="" class="h-96" />
+          <div class="w-52 h-[300px] overflow-hidden ml-20 lg:ml-0">
+            <img
+              :src="item.image"
+              alt="image_pekerja"
+              class="h-[400px] lg:h-96"
+            />
           </div>
-          <div class="flex-1 text-left space-y-2">
+          <div class="flex-1 text-center lg:text-left space-y-2">
             <h1 class="text-xl font-bold">{{ item.title }}</h1>
             <div class="flex gap-10 items-center">
               <div>
@@ -97,7 +101,9 @@ const data = ref([
               </div>
             </div>
             <hr class="border-white w-[70%]" />
-            <ul class="list-disc gap-5 max-w-96 columns-2">
+            <ul
+              class="list-disc gap-5 max-w-96 columns-2 text-left lg:pl-0 pl-3"
+            >
               <li v-for="(desc, idx) in item.description" :key="idx">
                 {{ desc }}
               </li>

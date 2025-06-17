@@ -5,7 +5,7 @@ import kandungan from "@/assets/kandungan.png";
 
 const data = ref([
   {
-    title: "Bidan istiadah S.Tr.Keb - Kepala Bidan dan owner",
+    title: "Bidan istiadah S.Tr.Keb - Kepala Bidan",
     description: [
       "Imunisasi Bayi (HB-0, DPT, IPV, POLIO, PCV, Campak)",
       "Imunisasi Tetanus, Periksa Hamil (ANC)",
@@ -27,7 +27,7 @@ const data = ref([
     time2: "Persalinan 24 Jam",
   },
   {
-    title: "Lilis S.Pd - Kepala Trapis",
+    title: "Sulistyowati S.Pd - Kepala Trapis",
     description: [
       "Pijat Laktasi",
       "Pijat Nifas (Pijat Setelah Lahiran)",

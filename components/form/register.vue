@@ -9,9 +9,9 @@ const date = ref("");
 const doctor = ref("");
 const complaint = ref("");
 const doctorList = ref([
-  { id: 1, name: "Bidan istiadah S.Tr.Keb - Kepala Bidan dan Ceo" },
+  { id: 1, name: "Bidan istiadah S.Tr.Keb - Kepala Bidan" },
   { id: 2, name: "Dr. Femmy Dzulkarnaen, SpOG - Dokter Spesialis Kandungan" },
-  { id: 3, name: "Lilis S.Pd - Kepala Trapis" },
+  { id: 3, name: "Sulistyowati S.Pd - Kepala Trapis" },
 ]);
 const arrow = ref(false);
 const doctorSelect = ref<HTMLSelectElement | null>(null);

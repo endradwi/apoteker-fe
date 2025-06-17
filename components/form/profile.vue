@@ -88,7 +88,7 @@ onMounted(() => {
           <img
             class="object-cover rounded-full w-full h-full bg-no-repeat bg-center ml-[-78px] lg:ml-[-148px]"
             v-else
-            :src="`http://localhost:8889/profile/image/${image?.name}`"
+            :src="`{$NUXT_PUBLIC_API_URL}/profile/image/${image?.name}`"
           />
           <!-- Preview Image -->
           <img

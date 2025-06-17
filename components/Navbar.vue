@@ -76,7 +76,7 @@ onMounted(() => {
             <div v-else class="w-10 h-10">
               <img
                 class="object-cover rounded-full w-full h-full bg-no-repeat bg-center"
-                :src="`http://localhost:8889/profile/image/${image}`"
+                :src="`{$NUXT_PUBLIC_API_URL}/profile/image/${image}`"
               />
             </div>
           </NuxtLink>

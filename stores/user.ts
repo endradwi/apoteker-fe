@@ -175,11 +175,13 @@ export const useUserStore = defineStore("user", {
         return { success, message };
       }
     },
-    async getAllReserve() {
+    async getAllReserve(page = 1) {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
-        const data = await get("reserve/all/reserve/admin");
+        const data = await get("reserve/all/reserve/admin",{
+          query: { page },
+        });
 
         this.user = data; // simpan ke state jika perlu
         return data;

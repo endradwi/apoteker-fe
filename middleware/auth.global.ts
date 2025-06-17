@@ -25,6 +25,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (tokenFromLocalStorage && to.path.startsWith('/admin')) {
     const store = useUserStore()
     const data = await store.profile() as { results?: { role_id: number } }
+    console.log('Token dari localStorage:', tokenFromLocalStorage)
+    console.log('Data dari middleware:', data)
     if (data.results?.role_id !== 1) {
       await Swal.fire({
         icon: 'warning',

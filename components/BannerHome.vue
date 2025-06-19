@@ -21,7 +21,7 @@ async function onClick() {
     class="flex lg:flex-row flex-col items-center justify-between px-5 lg:px-20 py-10 rounded-2xl bg-gradient-to-r from-white to-[#C95792] mx-2 lg:mx-10 shadow-2xl"
   >
     <div class="flex-1 space-y-5 text-center lg:text-left">
-      <h1 class="text-5xl font-bold">
+      <h1 class="text-3xl lg:text-5xl font-bold">
         Selamat Datang di Praktek Bidan Istiadah
       </h1>
       <p class="max-w-4xl">
@@ -31,7 +31,7 @@ async function onClick() {
       </p>
       <p>🌸 Sehat Ibu, Bahagia Keluarga.</p>
       <button
-        class="py-3 px-5 rounded-xl font-bold text-xl bg-[#3D365C] text-white"
+        class="py-3 px-5 rounded-xl font-semibold lg:font-bold text-md lg:text-xl bg-[#3D365C] text-white"
         @click="onClick"
       >
         Daftar Sekarang!

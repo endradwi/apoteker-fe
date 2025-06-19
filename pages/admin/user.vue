@@ -59,9 +59,9 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="w-screen h-screen flex flex-col py-12 px-52 gap-2">
+  <div class="w-screen h-screen flex flex-col py-12 px-5 lg:px-52 gap-2">
     <div class="w-full flex justify-between items-center">
-      <h1 class="text-5xl font-black">Akun User</h1>
+      <h1 class="text-3xl lg:text-5xl font-black">Akun User</h1>
       <button
         @click="toggleCreateAdmin"
         class="bg-slate-200 rounded-lg p-3 font-bold hover:bg-slate-500"

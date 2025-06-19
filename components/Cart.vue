@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const items = ref<any[]>([]); // reactive array untuk list
+const items = ref<any[]>([]);
 
 const store = useUserStore();
 

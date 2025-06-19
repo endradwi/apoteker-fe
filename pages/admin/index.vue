@@ -21,9 +21,9 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="w-screen h-screen flex flex-col py-24 px-52 gap-10">
-    <h1 class="text-5xl font-black">Admin Page</h1>
-    <div class="flex justify-between items-center gap-5">
+  <div class="w-screen h-screen flex flex-col py-24 px-5 lg:px-52 gap-10">
+    <h1 class="text-3xl lg:text-5xl font-black">Admin Page</h1>
+    <div class="flex lg:flex-row flex-col justify-between items-center gap-5">
       <div
         class="border border-black py-5 px-8 flex gap-10 justify-between items-center w-full"
       >

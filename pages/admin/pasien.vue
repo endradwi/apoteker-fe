@@ -48,7 +48,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="w-screen h-screen flex flex-col py-24 px-52 gap-10">
+  <div class="w-screen h-screen flex flex-col py-24 px-5 lg:px-52 gap-10">
     <h1 class="text-5xl font-black">Pendaftaran Pasien</h1>
     <table>
       <thead>
@@ -92,12 +92,6 @@ onMounted(() => {
               @click="EditClick(user)"
             >
               Edit
-            </button>
-            <button
-              @click="deleteUser(user)"
-              class="bg-red-500 text-white py-1 px-3 rounded"
-            >
-              Delete
             </button>
           </td>
         </tr>

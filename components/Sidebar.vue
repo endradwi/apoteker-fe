@@ -3,8 +3,10 @@ const route = useRoute();
 const router = useRouter();
 const store = useUserStore();
 const logout = async () => {
-  const token = useCookie("token");
-  token.value = null;
+  const tokenFromCookie = useCookie("token");
+  // token.value = null;
+  const creadential = useCredentialsStore();
+  creadential.clearToken();
   store.$reset();
   router.push("/");
   // location.reload();
@@ -13,7 +15,7 @@ const logout = async () => {
 <template>
   <aside class="bg-[#C95792] w-52 pt-10">
     <div class="w-full border-b-white border-b-2 flex justify-center pb-5">
-      <NuxtLink to="/">
+      <NuxtLink to="/admin">
         <img src="@/assets/Logogsu.png" alt="" class="w-20 h-20" />
       </NuxtLink>
     </div>
@@ -22,7 +24,7 @@ const logout = async () => {
         to="/admin"
         class="*:pl-5 *:py-3 *:border-b-white *:border-b-2 text-white"
         ><li
-          class="hover:bg-white"
+          class="hover:bg-white hover:text-black hover:font-bold"
           :class="[
             'hover:bg-white',
             route.path === '/admin' ? 'bg-white font-bold text-black' : '',
@@ -35,7 +37,7 @@ const logout = async () => {
         to="/admin/user"
         class="*:pl-5 *:py-3 *:border-b-white *:border-b-2 text-white"
         ><li
-          class="hover:bg-white"
+          class="hover:bg-white hover:text-black hover:font-bold"
           :class="[
             'hover:bg-white',
             route.path === '/admin/user' ? 'bg-white font-bold text-black' : '',
@@ -48,7 +50,7 @@ const logout = async () => {
         to="/admin/pasien"
         class="*:pl-5 *:py-3 *:border-b-white *:border-b-2 text-white"
         ><li
-          class="hover:bg-white"
+          class="hover:bg-white hover:text-black hover:font-bold"
           :class="[
             'hover:bg-white',
             route.path === '/admin/pasien'

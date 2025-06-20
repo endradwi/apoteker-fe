@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import jsPDF from "jspdf";
+// import { jsPDF } from "jspdf";
 import logo from "../assets/Logogsu.png";
 
 const items = ref<any[]>([]);
+const { $jsPDF } = useNuxtApp();
 
 const store = useUserStore();
 const totalPage = ref(0);
@@ -19,34 +20,64 @@ async function fetchHistory(page = 1) {
   }
   totalPage.value = response.page_info.total_page;
 }
+
+function parseHtmlListToText(html: string): string[] {
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html;
+  const items: string[] = [];
+
+  const ol = tempDiv.querySelector("ol");
+  const ul = tempDiv.querySelector("ul");
+  const list = ol || ul;
+
+  if (list) {
+    list.querySelectorAll("li").forEach((li, index) => {
+      const space = "   ";
+      const prefix = space + "-";
+      items.push(`${prefix} ${li.textContent?.trim()}`);
+    });
+  } else {
+    // Fallback jika bukan list
+    items.push(html);
+  }
+
+  return items;
+}
+
 function generateSinglePDF(item: any) {
-  const doc = new jsPDF();
+  if (process.client) {
+    const doc = new $jsPDF();
 
-  doc.setFontSize(12);
+    doc.setFontSize(12);
 
-  doc.addImage(logo, 15, 20, 20, 20);
-  let y = 50;
-  const tanggal = item.date.split("T")[0].split("-").reverse().join("-");
-  doc.setFont("Helvetica", "bold");
-  doc.text("Rekam Medis Pasien", 14, y);
-  y += 10;
-  doc.setFont("Helvetica", "normal");
-  doc.text(`Nama: ${item.fullname}`, 14, y);
-  y += 7;
-  doc.text(`Tanggal Periksa: ${tanggal}`, 14, y);
-  y += 7;
-  doc.text(`Dengan Dokter: ${item.doctor}`, 14, y);
-  y += 7;
-  doc.text("Catatan Dokter:", 14, y);
-  y += 7;
-
-  const lines = doc.splitTextToSize(item.rec_medic || "-", 170);
-  lines.forEach((line: any) => {
-    doc.text(`  ${line}`, 14, y);
+    doc.addImage(logo, "PNG", 15, 20, 20, 20);
+    let y = 50;
+    const tanggal = item.date.split("T")[0].split("-").reverse().join("-");
+    doc.setFont("Helvetica", "bold");
+    doc.text("Rekam Medis Pasien", 14, y);
+    y += 10;
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Nama: ${item.fullname}`, 14, y);
     y += 7;
-  });
+    doc.text(`Tanggal Periksa: ${tanggal}`, 14, y);
+    y += 7;
+    doc.text(`Dengan Dokter: ${item.doctor}`, 14, y);
+    y += 7;
+    doc.text("Catatan Dokter:", 14, y);
+    y += 7;
 
-  doc.save(`Rekam_Medis_${item.fullname.replace(/\s+/g, "_")}.pdf`);
+    const parsedLines = parseHtmlListToText(item.rec_medic || "-");
+
+    parsedLines.forEach((line: string) => {
+      const wrapped = doc.splitTextToSize(line, 170);
+      wrapped.forEach((wrapLine: string) => {
+        doc.text(wrapLine, 14, y);
+        y += 7;
+      });
+    });
+
+    doc.save(`Rekam_Medis_${item.fullname.replace(/\s+/g, "_")}.pdf`);
+  }
 }
 
 onMounted(() => {

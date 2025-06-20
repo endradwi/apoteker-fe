@@ -72,7 +72,9 @@ onMounted(() => {
           <td class="border border-black py-2 px-4">{{ user.age }}</td>
           <td class="border border-black py-2 px-4">{{ user.date }}</td>
           <td class="border border-black py-2 px-4">{{ user.doctor }}</td>
-          <td class="border border-black py-2 px-4">{{ user.rec_medic }}</td>
+          <td class="border border-black py-2 px-4">
+            <div v-html="user.rec_medic"></div>
+          </td>
           <td class="border border-black py-2 px-4">
             <span
               :class="{
@@ -137,5 +139,9 @@ onMounted(() => {
 <style scoped>
 * {
   font-family: "Mulish";
+}
+/* Jika pakai <style scoped>, tambahkan :deep() */
+:deep(ol) {
+  @apply list-disc pl-6 mb-2;
 }
 </style>

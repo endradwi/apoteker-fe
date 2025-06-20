@@ -104,7 +104,7 @@ onMounted(() => {
         </div>
         <div
           v-if="showDropdown"
-          class="absolute bg-white shadow-lg rounded-md top-36 lg:top-20 w-56 lg:w-44 text-right border border-gray-300"
+          class="absolute bg-white shadow-lg rounded-md top-36 lg:top-20 w-56 text-right border border-gray-300"
         >
           <ul class="flex flex-col gap-2 p-2">
             <NuxtLink to="/profile">

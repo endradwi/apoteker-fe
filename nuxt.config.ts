@@ -1,11 +1,21 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  
   nitro: {
     compressPublicAssets: true,
     prerender: {
       crawlLinks: true,
       ignore: ["/"]
    }
+  },
+  vite: {
+    optimizeDeps: {
+      include: ['jspdf'],
+    },
+  },
+  // jika error tetap muncul di produksi
+  build: {
+    transpile: ['jspdf'],
   },
   runtimeConfig: {
     public: {

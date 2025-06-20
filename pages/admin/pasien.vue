@@ -76,10 +76,13 @@ onMounted(() => {
           <td class="border border-black py-2 px-4">
             <span
               :class="{
-                'bg-yellow-200 text-yellow-800': user.status === 'pending',
+                'bg-yellow-200 text-yellow-800':
+                  user.status === 'pending' || user.status === 'Pending',
                 'bg-green-200 text-green-800': user.status === 'completed',
                 'bg-red-200 text-red-800':
-                  user.status !== 'pending' && user.status !== 'completed',
+                  user.status !== 'pending' &&
+                  user.status !== 'Pending' &&
+                  user.status !== 'completed',
               }"
               class="p-1 rounded-xl font-semibold"
             >
@@ -113,7 +116,7 @@ onMounted(() => {
         @click="getAllPasien(page)"
         class="p-2 px-4 rounded"
         :class="{
-          'bg-blue-500 text-white': page === currentPage,
+          'bg-[#C95792] text-white': page === currentPage,
           'bg-gray-200': page !== currentPage,
         }"
       >

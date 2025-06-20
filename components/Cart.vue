@@ -1,16 +1,52 @@
 <script setup lang="ts">
+import jsPDF from "jspdf";
+import logo from "../assets/Logogsu.png";
+
 const items = ref<any[]>([]);
 
 const store = useUserStore();
+const totalPage = ref(0);
+const currentPage = ref(1);
 
-async function fetchHistory() {
-  const response = await store.getHistory();
+async function fetchHistory(page = 1) {
+  currentPage.value = page;
+  const response = (await store.getHistory(page)) as any;
   if (response) {
     const results = (response as any).results;
     items.value = results;
   } else {
     console.error("Failed to fetch history");
   }
+  totalPage.value = response.page_info.total_page;
+}
+function generateSinglePDF(item: any) {
+  const doc = new jsPDF();
+
+  doc.setFontSize(12);
+
+  doc.addImage(logo, 15, 20, 20, 20);
+  let y = 50;
+  const tanggal = item.date.split("T")[0].split("-").reverse().join("-");
+  doc.setFont("Helvetica", "bold");
+  doc.text("Rekam Medis Pasien", 14, y);
+  y += 10;
+  doc.setFont("Helvetica", "normal");
+  doc.text(`Nama: ${item.fullname}`, 14, y);
+  y += 7;
+  doc.text(`Tanggal Periksa: ${tanggal}`, 14, y);
+  y += 7;
+  doc.text(`Dengan Dokter: ${item.doctor}`, 14, y);
+  y += 7;
+  doc.text("Catatan Dokter:", 14, y);
+  y += 7;
+
+  const lines = doc.splitTextToSize(item.rec_medic || "-", 170);
+  lines.forEach((line: any) => {
+    doc.text(`  ${line}`, 14, y);
+    y += 7;
+  });
+
+  doc.save(`Rekam_Medis_${item.fullname.replace(/\s+/g, "_")}.pdf`);
 }
 
 onMounted(() => {
@@ -51,7 +87,16 @@ onMounted(() => {
             </td>
             <td class="border border-black py-2">{{ item.doctor }}</td>
             <td class="border border-black py-2">{{ item.complaint }}</td>
-            <td class="border border-black py-2">{{ item.rec_medic }}</td>
+            <td class="border border-black py-2">
+              <span
+                v-if="item.rec_medic !== '-'"
+                class="cursor-pointer text-blue-600 hover:underline hover:font-bold"
+                @click="generateSinglePDF(item)"
+              >
+                Catatan Medis
+              </span>
+              <span v-else>-</span>
+            </td>
             <td class="border border-black py-2">
               <span class="bg-yellow-600 rounded-xl px-2 py-1 font-bold">{{
                 item.status
@@ -61,5 +106,35 @@ onMounted(() => {
         </tbody>
       </table>
     </section>
+    <div class="w-full flex justify-center gap-2 mt-4">
+      <button
+        class="p-2 px-4 bg-gray-200 rounded"
+        :disabled="currentPage === 1"
+        @click="fetchHistory(currentPage - 1)"
+      >
+        Prev
+      </button>
+
+      <button
+        v-for="page in totalPage"
+        :key="page"
+        @click="fetchHistory(page)"
+        class="p-2 px-4 rounded"
+        :class="{
+          'bg-[#C95792] text-white': page === currentPage,
+          'bg-gray-200': page !== currentPage,
+        }"
+      >
+        {{ page }}
+      </button>
+
+      <button
+        class="p-2 px-4 bg-gray-200 rounded"
+        :disabled="currentPage === totalPage"
+        @click="fetchHistory(currentPage + 1)"
+      >
+        Next
+      </button>
+    </div>
   </div>
 </template>

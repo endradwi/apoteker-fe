@@ -121,7 +121,7 @@ onMounted(() => {
         @click="getAllUser(page)"
         class="p-2 px-4 rounded"
         :class="{
-          'bg-blue-500 text-white': page === currentPage,
+          'bg-[#C95792] text-white': page === currentPage,
           'bg-gray-200': page !== currentPage,
         }"
       >

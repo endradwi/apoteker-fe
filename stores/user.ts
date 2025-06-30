@@ -117,12 +117,12 @@ export const useUserStore = defineStore("user", {
         console.error("Failed to fetch user:", error);
       }
     },
-    async allUser(page = 1) {
+    async allUser(page = 1, search: string = "") {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
         const data = await get("users/all", {
-          query: { page },
+          query: { page, search },
         });
 
         this.user = data; // simpan ke state jika perlu
@@ -150,12 +150,12 @@ export const useUserStore = defineStore("user", {
         return null;
       }
     },
-    async getHistory(page = 1) {
+    async getHistory(page = 1, search: string = "") {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
         const data = await get("reserve/all/reserve/users",{
-          query: {page}
+          query: {page, search}
         });
 
         this.user = data; // simpan ke state jika perlu
@@ -177,12 +177,12 @@ export const useUserStore = defineStore("user", {
         return { success, message };
       }
     },
-    async getAllReserve(page = 1) {
+    async getAllReserve(page = 1, search: string = "") {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
         const data = await get("reserve/all/reserve/admin",{
-          query: { page },
+          query: { page, search },
         });
 
         this.user = data; // simpan ke state jika perlu
@@ -201,6 +201,29 @@ export const useUserStore = defineStore("user", {
         return data; // bisa mengembalikan data atau status sukses
       } catch (error) {
         console.error("❌ Failed to delete user:", error);
+        return null;
+      }
+    },
+    async patchPasienData(
+      rec_medic: string,
+      status: string,
+      id: number
+    ) {
+      const { patch } = useHttp();
+      const formData = new FormData();
+
+      formData.append("rec_medic", rec_medic);
+      formData.append("status", status);
+
+      try {
+        const data = await patch(`reserve/${id}`, formData,{
+          // ❌ Jangan set Content-Type secara manual! Biarkan browser handle.
+        });
+
+        this.user = data;
+        return data;
+      } catch (error) {
+        console.error("❌ Failed to fetch profile:", error);
         return null;
       }
     },

@@ -20,10 +20,11 @@ const modalOpenCreateAdmin = ref(false);
 const modalOpenEditUser = ref(false);
 const totalPage = ref(0);
 const currentPage = ref(1);
+const searchQuery = ref("");
 
-async function getAllUser(page = 1) {
+async function getAllUser(page = 1, search = "") {
   currentPage.value = page;
-  const response = (await store.allUser(page)) as any;
+  const response = (await store.allUser(page, search)) as any;
   if (response && Array.isArray(response.results)) {
     users.value = response.results;
     console.log("users data=", users.value);
@@ -51,7 +52,6 @@ async function deleteUser(user: User) {
   } else {
     console.error("Failed to delete user");
   }
-  // console.log("users data deleted=", deleteUser(users.value[0]));
 }
 
 onMounted(() => {
@@ -62,6 +62,30 @@ onMounted(() => {
   <div class="w-screen h-screen flex flex-col py-12 px-5 lg:px-52 gap-2">
     <div class="w-full flex justify-between items-center">
       <h1 class="text-3xl lg:text-5xl font-black">Akun User</h1>
+      <div
+        class="flex focus-within:border-2 focus-within:border-black border border-black rounded-lg items-center pr-2 overflow-hidden"
+      >
+        <input
+          placeholder="Search name"
+          class="outline-none rounded-md pl-5 py-2"
+          v-model="searchQuery"
+          @input="getAllUser(1, searchQuery)"
+        />
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+          >
+            <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
+            <path
+              fill="currentColor"
+              d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14"
+            />
+          </svg>
+        </div>
+      </div>
       <button
         @click="toggleCreateAdmin"
         class="bg-slate-200 rounded-lg p-3 font-bold hover:bg-slate-500"
@@ -110,7 +134,7 @@ onMounted(() => {
       <button
         class="p-2 px-4 bg-gray-200 rounded"
         :disabled="currentPage === 1"
-        @click="getAllUser(currentPage - 1)"
+        @click="getAllUser(currentPage - 1, searchQuery)"
       >
         Prev
       </button>
@@ -118,7 +142,7 @@ onMounted(() => {
       <button
         v-for="page in totalPage"
         :key="page"
-        @click="getAllUser(page)"
+        @click="getAllUser(page, searchQuery)"
         class="p-2 px-4 rounded"
         :class="{
           'bg-[#C95792] text-white': page === currentPage,
@@ -131,7 +155,7 @@ onMounted(() => {
       <button
         class="p-2 px-4 bg-gray-200 rounded"
         :disabled="currentPage === totalPage"
-        @click="getAllUser(currentPage + 1)"
+        @click="getAllUser(currentPage + 1, searchQuery)"
       >
         Next
       </button>

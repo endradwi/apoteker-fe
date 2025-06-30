@@ -6,9 +6,3 @@ useSeoMeta({
 <template>
   <Cart />
 </template>
-
-<style scoped>
-/* * {
-  font-family: "Mulish";
-} */
-</style>

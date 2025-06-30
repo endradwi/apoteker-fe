@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ModalEditPasien } from "#components";
 import { on } from "events";
+import type { dataPasien } from "~/types/user";
 
 definePageMeta({
   layout: "admin",
@@ -10,18 +11,7 @@ useSeoMeta({
   title: "Admin-Pasien Page",
 });
 
-interface User {
-  id: number;
-  fullname: string;
-  phone_number: string;
-  age: string;
-  date: number;
-  doctor: string;
-  rec_medic: string;
-  status: string;
-}
-
-const users = ref<User[]>([]);
+const users = ref<dataPasien[]>([]);
 const totalPage = ref(0);
 const currentPage = ref(1);
 const modalOpenEditUser = ref(false);
@@ -34,7 +24,7 @@ async function getAllPasien(page = 1, search = "") {
   const response = (await store.getAllReserve(page, search)) as any;
   if (response && Array.isArray(response.results)) {
     console.log("Pasien data=", response.results);
-    users.value = response.results.map((user: User) => {
+    users.value = response.results.map((user: dataPasien) => {
       const [year, month, day] = user.date.toString().split("T")[0].split("-");
       return {
         ...user,
@@ -47,13 +37,13 @@ async function getAllPasien(page = 1, search = "") {
   }
   totalPage.value = response.page_info.total_page;
 }
-function EditClick(user: User) {
+function EditClick(user: dataPasien) {
   selectedUser.value = { ...user }; // Simpan user yang diklik
   modalOpenEditUser.value = true;
   console.log("Selected user for edit:", selectedUser.value);
 }
 onMounted(() => {
-  getAllPasien(); // Ambil data pasien saat komponen dimuat
+  getAllPasien();
 });
 </script>
 <template>
@@ -76,7 +66,6 @@ onMounted(() => {
             height="32"
             viewBox="0 0 24 24"
           >
-            <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
             <path
               fill="currentColor"
               d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14"

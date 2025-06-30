@@ -32,3 +32,33 @@ export type createAdmin = {
     phone_number: string;
     role_id: number;
 }
+
+export type editPasien = {
+    id: number;
+  rec_medic: string;
+  status: string;
+  fullname: string;
+  phone_number: string;
+  age: string;
+  date: number;
+  doctor: string;
+}
+
+export type editUser = {
+    id: number;
+    fullname: string;
+    phone_number: string;
+    email: string;
+    role_id: number;
+}
+
+export type dataPasien = {
+    id: number;
+  fullname: string;
+  phone_number: string;
+  age: string;
+  date: number;
+  doctor: string;
+  rec_medic: string;
+  status: string;
+}

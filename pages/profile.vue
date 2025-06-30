@@ -6,9 +6,3 @@ useSeoMeta({
 <template>
   <FormProfile />
 </template>
-
-<style scoped>
-/* * {
-  font-family: "Mulish";
-} */
-</style>

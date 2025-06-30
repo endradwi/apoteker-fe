@@ -1,24 +1,15 @@
 <script lang="ts" setup>
-interface User {
-  id: number;
-  rec_medic: string;
-  status: string;
-  fullname: string;
-  phone_number: string;
-  age: string;
-  date: number;
-  doctor: string;
-}
+import Swal from "sweetalert2";
+import type { editPasien } from "~/types/user";
 
 const store = useUserStore();
-const editUser = ref<User | null>(null);
+const editUser = ref<editPasien | null>(null);
 const statusOptions = ["completed", "pending", "cancelled"];
 
 const props = defineProps<{
-  user: User | null;
+  user: editPasien | null;
 }>();
 
-// ✅ Daftarkan event close & refresh
 const emit = defineEmits(["close", "refresh"]);
 
 async function editProfile() {
@@ -29,9 +20,25 @@ async function editProfile() {
     editUser.value.status,
     editUser.value.id
   );
-  console.log("Profile updated:", response);
-
-  // ✅ Panggil emit untuk tutup modal & refresh data di parent
+  if (response) {
+    Swal.fire({
+      icon: "success",
+      title: "Berhasil",
+      text: "Profile berhasil diperbarui!",
+      timer: 3000,
+      showConfirmButton: false,
+      timerProgressBar: true,
+    });
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Gagal",
+      text: "Gagal memperbarui data!",
+      timer: 3000,
+      showConfirmButton: false,
+      timerProgressBar: true,
+    });
+  }
   emit("refresh");
   emit("close");
 }

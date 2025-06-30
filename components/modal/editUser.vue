@@ -1,18 +1,13 @@
 <script lang="ts" setup>
-interface User {
-  id: number;
-  fullname: string;
-  phone_number: string;
-  email: string;
-  role_id: number; // atau `role_id: number` tergantung datanya
-}
+import type { editUser } from "~/types/user";
+
 const store = useUserStore();
 const editOpen = ref(false);
-const users = ref<User[]>([]);
-const editUser = ref<User | null>(null);
+const users = ref<editUser[]>([]);
+const editUser = ref<editUser | null>(null);
 
 const props = defineProps<{
-  user: User | null;
+  user: editUser | null;
 }>();
 
 async function editProfile() {
@@ -22,7 +17,6 @@ async function editProfile() {
     editUser.value.id,
     editUser.value.role_id
   );
-  console.log("Profile data = ", response);
 
   // Update user di list users
   const index = users.value.findIndex((u) => u.id === editUser.value?.id);

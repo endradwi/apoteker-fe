@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { editUser } from "~/types/user";
+
 definePageMeta({
   layout: "admin",
   //   name: "AdminUserPage",
@@ -6,15 +8,8 @@ definePageMeta({
 useSeoMeta({
   title: "Admin-User Page",
 });
-interface User {
-  id: number;
-  fullname: string;
-  phone_number: string;
-  email: string;
-  role_id: number; // atau `role_id: number` tergantung datanya
-}
-const users = ref<User[]>([]);
-const selectedUser = ref<User | null>(null);
+const users = ref<editUser[]>([]);
+const selectedUser = ref<editUser | null>(null);
 const store = useUserStore();
 const modalOpenCreateAdmin = ref(false);
 const modalOpenEditUser = ref(false);
@@ -27,14 +22,11 @@ async function getAllUser(page = 1, search = "") {
   const response = (await store.allUser(page, search)) as any;
   if (response && Array.isArray(response.results)) {
     users.value = response.results;
-    console.log("users data=", users.value);
   }
   totalPage.value = response.page_info.total_page;
-  console.log("total page=", totalPage.value);
-  console.log("data all=", response);
 }
 
-function EditClick(user: User) {
+function EditClick(user: editUser) {
   selectedUser.value = { ...user };
   modalOpenCreateAdmin.value = false;
   modalOpenEditUser.value = !modalOpenEditUser.value;
@@ -43,7 +35,7 @@ function toggleCreateAdmin() {
   modalOpenEditUser.value = false;
   modalOpenCreateAdmin.value = !modalOpenCreateAdmin.value;
 }
-async function deleteUser(user: User) {
+async function deleteUser(user: editUser) {
   const response = await store.deleteUser(user.id);
   if (response) {
     console.log("delete user response=", user);
@@ -55,7 +47,7 @@ async function deleteUser(user: User) {
 }
 
 onMounted(() => {
-  getAllUser(); // Example usage, remove this line in production
+  getAllUser();
 });
 </script>
 <template>
@@ -78,7 +70,6 @@ onMounted(() => {
             height="32"
             viewBox="0 0 24 24"
           >
-            <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
             <path
               fill="currentColor"
               d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14"

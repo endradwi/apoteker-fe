@@ -6,9 +6,3 @@ useSeoMeta({
 <template>
   <FormRegister />
 </template>
-
-<style scoped>
-/* * {
-  font-family: "Mulish";
-} */
-</style>

@@ -12,13 +12,11 @@
         mulai dari pemeriksaan kehamilan, imunisasi, hingga konsultasi tumbuh
         kembang anak.
       </p>
-      <!-- <div class="p-2 border border-black shadow"> -->
       <img
         src="../assets/ruangan.jpg"
         alt="About Us"
         class="w-96 h-72 rounded object-cover aspect-video rounded-lg border border-gray-300 shadow-md shadow-[#C95792] flex-1"
       />
     </div>
-    <!-- </div> -->
   </div>
 </template>

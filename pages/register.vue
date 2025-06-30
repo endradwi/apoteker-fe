@@ -39,8 +39,6 @@ const onClick = async () => {
       router.push("/login");
     });
   } else {
-    // Handle registration error
-    // alert("Registration failed. Please try again.");
     console.error("Registration failed", response);
     responseError.value = (response as any).message;
     Swal.fire({
@@ -51,7 +49,6 @@ const onClick = async () => {
       showConfirmButton: false,
       timerProgressBar: true,
     });
-    // console.error("Registration failed data", response);
   }
 };
 </script>

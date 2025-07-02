@@ -19,7 +19,7 @@ const dateInput = ref<HTMLInputElement | null>(null);
 const store = useUserStore();
 
 function openDatePicker() {
-  dateInput.value?.showPicker(); // showPicker() hanya didukung di Chrome/Edge terbaru
+  dateInput.value?.showPicker();
 }
 
 function toggleArrow() {
@@ -143,7 +143,6 @@ async function reserve() {
               </svg>
             </div>
 
-            <!-- Dropdown menu -->
             <div
               v-show="arrow"
               class="absolute z-10 w-full bg-white border border-black rounded-md mt-1 shadow-lg"

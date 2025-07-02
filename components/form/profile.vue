@@ -62,12 +62,10 @@ onMounted(() => {
       class="px-5 py-10 rounded-2xl border-2 border-[#C95792] shadow-xl shadow-[#3D365C]"
     >
       <form @submit.prevent="editProfile" class="flex gap-5">
-        <!-- Avatar Upload with Hover Camera Icon -->
         <div
           class="group border border-black relative overflow-hidden w-28 h-20 lg:w-44 lg:h-36 rounded-full text-center flex items-center justify-center hover:bg-black/50 transition-all duration-300 ease-in-out cursor-pointer"
           @click="triggerFileInput"
         >
-          <!-- Profile Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="150"
@@ -90,14 +88,13 @@ onMounted(() => {
             v-else
             :src="`{$NUXT_PUBLIC_API_URL}/profile/image/${image?.name}`"
           />
-          <!-- Preview Image -->
           <img
             v-if="previewUrl"
             :src="previewUrl"
             alt="Preview"
             class="w-full h-full object-cover rounded-full"
           />
-          <!-- Camera Icon on Hover -->
+
           <div
             class="absolute inset-0 flex items-center text-white justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           >
@@ -107,7 +104,6 @@ onMounted(() => {
               height="52"
               viewBox="0 0 24 24"
             >
-              <!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE -->
               <circle cx="12" cy="12" r="3" fill="currentColor" />
               <path
                 fill="currentColor"

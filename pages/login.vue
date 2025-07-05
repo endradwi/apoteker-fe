@@ -58,96 +58,130 @@ const onClick = async () => {
 };
 </script>
 <template>
-  <div class="w-screen h-screen flex">
-    <div
-      class="flex-1 bg-[#C95792]/90 lg:rounded-r-[200px] shadow-xl shadow-[#3D365C]"
-    >
-      <div class="flex flex-col items-center justify-center h-full">
-        <img
-          src="@/assets/Logogsu.png"
-          alt="Logo Perusahaan"
-          class="w-20 h-20"
-        />
-        <div
-          class="bg-white w-96 h-96 rounded-xl shadow-lg flex flex-col items-center justify-center gap-5"
-        >
-          <h1 class="text-3xl font-bold">Login</h1>
-          <form
-            @submit.prevent="onClick"
-            class="flex flex-col gap-5 w-full px-10"
-          >
-            <div class="flex flex-col gap-2">
-              <label for="email" class="mr-2">Email</label>
+  <div class="min-h-screen w-full flex flex-col lg:flex-row">
+    <!-- Main Content Section -->
+    <div class="flex-1 bg-gradient-to-br from-[#C95792] to-[#A64A7A] lg:rounded-r-[100px] xl:rounded-r-[200px] shadow-2xl">
+      <div class="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+        <!-- Logo -->
+        <div class="mb-6 lg:mb-8">
+          <img
+            src="@/assets/Logogsu.png"
+            alt="Logo Perusahaan"
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto"
+          />
+        </div>
+
+        <!-- Login Form Card -->
+        <div class="bg-white w-full max-w-md lg:max-w-lg xl:max-w-xl rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-10">
+          <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 lg:mb-8">
+            Login
+          </h1>
+          
+          <form @submit.prevent="onClick" class="space-y-5 lg:space-y-6">
+            <!-- Email Field -->
+            <div class="space-y-2">
+              <label for="email" class="block text-sm font-medium text-gray-700">
+                Email
+              </label>
               <input
-                type="text"
-                placeholder="Email"
+                id="email"
+                type="email"
+                placeholder="Masukkan email Anda"
                 v-model="email"
-                class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border focus:border-black focus:shadow-lg transition-all duration-300 ease-in-out"
+                required
+                autocomplete="email"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D365C] focus:border-transparent transition-all duration-300 text-sm sm:text-base"
               />
             </div>
-            <div class="flex flex-col gap-2">
-              <label for="password" class="mr-2">Password</label>
-              <div
-                class="flex border border-gray-300 rounded-md justify-between items-center pr-4 focus-within:border focus-within:border-black focus-within:shadow-lg transition-all duration-300 ease-in-out overflow-hidden"
-              >
+
+            <!-- Password Field -->
+            <div class="space-y-2">
+              <label for="password" class="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <div class="relative">
                 <input
+                  id="password"
                   :type="eye ? 'text' : 'password'"
-                  placeholder="Password"
+                  placeholder="Masukkan password Anda"
                   v-model="password"
-                  class="px-4 py-2 outline-none w-full"
+                  required
+                  autocomplete="current-password"
+                  class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D365C] focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                 />
-                <!-- eye buka -->
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  v-if="eye"
+                <button
+                  type="button"
                   @click="togglePasswordVisibility"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 transition-colors"
                 >
-                  <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-                  <path
-                    fill="currentColor"
-                    d="M12 16q1.875 0 3.188-1.312T16.5 11.5t-1.312-3.187T12 7T8.813 8.313T7.5 11.5t1.313 3.188T12 16m0-1.8q-1.125 0-1.912-.788T9.3 11.5t.788-1.912T12 8.8t1.913.788t.787 1.912t-.787 1.913T12 14.2m0 4.8q-3.35 0-6.113-1.8t-4.362-4.75q-.125-.225-.187-.462t-.063-.488t.063-.488t.187-.462q1.6-2.95 4.363-4.75T12 4t6.113 1.8t4.362 4.75q.125.225.188.463t.062.487t-.062.488t-.188.462q-1.6 2.95-4.362 4.75T12 19m0-2q2.825 0 5.188-1.487T20.8 11.5q-1.25-2.525-3.613-4.012T12 6T6.813 7.488T3.2 11.5q1.25 2.525 3.613 4.013T12 17"
-                  />
-                </svg>
-                <!-- // eye tutup -->
-                <svg
-                  v-else
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  @click="togglePasswordVisibility"
-                >
-                  <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-                  <path
-                    fill="currentColor"
-                    d="M15.175 8.325q.725.725 1.063 1.65t.237 1.9q0 .375-.275.638t-.65.262t-.638-.262t-.262-.638q.125-.65-.075-1.25T13.95 9.6t-1.025-.65t-1.275-.1q-.375 0-.638-.275t-.262-.65t.263-.637t.637-.263q.95-.1 1.875.238t1.65 1.062M12 6q-.475 0-.925.037t-.9.138q-.425.075-.763-.125t-.462-.6t.088-.775t.612-.45q.575-.125 1.163-.175T12 4q3.425 0 6.263 1.8t4.337 4.85q.1.2.15.413t.05.437t-.038.438t-.137.412q-.45 1-1.112 1.875t-1.463 1.6q-.3.275-.7.225t-.65-.4t-.212-.763t.337-.687q.6-.575 1.1-1.25t.875-1.45q-1.25-2.525-3.613-4.012T12 6m0 13q-3.35 0-6.125-1.812T1.5 12.425q-.125-.2-.187-.437T1.25 11.5t.05-.475t.175-.45q.5-1 1.163-1.912T4.15 7L2.075 4.9q-.275-.3-.262-.712T2.1 3.5t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275l-3.5-3.45q-.875.275-1.775.413T12 19M5.55 8.4q-.725.65-1.325 1.425T3.2 11.5q1.25 2.525 3.613 4.013T12 17q.5 0 .975-.062t.975-.138l-.9-.95q-.275.075-.525.113T12 16q-1.875 0-3.188-1.312T7.5 11.5q0-.275.038-.525t.112-.525zm4.2 4.2"
-                  />
-                </svg>
+                  <!-- Eye Open Icon -->
+                  <svg
+                    v-if="eye"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  
+                  <!-- Eye Closed Icon -->
+                  <svg
+                    v-else
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
               </div>
             </div>
+
+            <!-- Submit Button -->
             <button
               type="submit"
-              class="bg-[#3D365C] text-white rounded-md px-4 py-2 font-bold text-center"
+              class="w-full bg-[#3D365C] text-white py-3 px-4 rounded-lg font-semibold text-sm sm:text-base hover:bg-[#2d2548] focus:outline-none focus:ring-2 focus:ring-[#3D365C] focus:ring-offset-2 transform hover:scale-[1.02] transition-all duration-300 shadow-lg"
             >
-              Login
+              Masuk
             </button>
           </form>
-          <p class="text-sm text-gray-500">
+
+          <!-- Register Link -->
+          <p class="text-center text-sm sm:text-base text-gray-600 mt-6 lg:mt-8">
             Belum punya akun?
-            <nuxt-link to="/register" class="text-[#3D365C] underline"
-              >Daftar</nuxt-link
+            <nuxt-link 
+              to="/register" 
+              class="text-[#3D365C] font-semibold hover:text-[#2d2548] underline underline-offset-2 hover:underline-offset-4 transition-all duration-300"
             >
+              Daftar di sini
+            </nuxt-link>
+          </p>
+        </div>
+
+        <!-- Additional Info for Mobile -->
+        <div class="mt-6 text-center text-white/90 lg:hidden">
+          <p class="text-xs sm:text-sm max-w-sm mx-auto">
+            Sistem manajemen farmasi dan layanan kesehatan terpadu
           </p>
         </div>
       </div>
     </div>
-    <div class="flex-1 lg:block hidden">
+
+    <!-- Image Section (Hidden on Mobile) -->
+    <div class="hidden lg:flex lg:flex-1 relative overflow-hidden">
       <img
         src="@/assets/loginDoc.png"
-        alt="Login Dockter"
+        alt="Login Doctor"
         class="w-full h-full object-cover transform scale-x-[-1]"
       />
     </div>
@@ -155,7 +189,38 @@ const onClick = async () => {
 </template>
 
 <style scoped>
-/* * {
-  font-family: "Mulish";
-} */
+/* Custom focus styles for better accessibility */
+input:focus {
+  box-shadow: 0 0 0 3px rgba(61, 54, 92, 0.1);
+}
+
+/* Custom button hover effects */
+button[type="submit"]:hover {
+  box-shadow: 0 10px 25px rgba(61, 54, 92, 0.3);
+}
+
+/* Responsive text sizing */
+@media (max-width: 640px) {
+  .text-responsive {
+    font-size: 14px;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 </style>

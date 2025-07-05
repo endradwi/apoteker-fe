@@ -2,6 +2,7 @@
 import { ref } from "vue";
 
 const showDropdown = ref(false);
+const showMobileMenu = ref(false);
 const profileData = ref(false);
 const name = ref("");
 const router = useRouter();
@@ -11,58 +12,216 @@ const image = ref("");
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
 };
+
+const toggleMobileMenu = () => {
+  showMobileMenu.value = !showMobileMenu.value;
+};
+
 const store = useUserStore();
 
 async function profile() {
-  const response = await store.profile();
-  if (response) {
-    profileData.value = !profileData.value;
-    name.value = (response as any).results.fullname;
-    email.value = (response as any).results.email;
-    image.value = (response as any).results.image;
-    console.log("Profile Image = ", image.value);
-  } else {
-    // Handle profile retrieval error
-    console.error("Failed to retrieve profile");
+  try {
+    const response = await store.profile() as { results?: { fullname: string; email: string; image: string } } | null;
+    if (response && response.results) {
+      profileData.value = true;
+      name.value = response.results.fullname || "";
+      email.value = response.results.email || "";
+      image.value = response.results.image || "";
+      console.log("Profile Image = ", image.value);
+    } else {
+      // Handle profile retrieval error - no data or no results
+      console.warn("⚠️ Failed to retrieve profile data");
+      profileData.value = false;
+    }
+  } catch (error) {
+    console.error("❌ Error fetching profile:", error);
+    profileData.value = false;
   }
 }
+
 const logout = async () => {
   const tokenFromCookie = useCookie("token");
-  // token.value = null;
   const creadential = useCredentialsStore();
   creadential.clearToken();
   store.$reset();
   profileData.value = false;
+  showMobileMenu.value = false;
   router.push("/");
-  // location.reload();
 };
+
 onMounted(() => {
-  profile();
+  // Only fetch profile if there's a token available
+  const credentialsStore = useCredentialsStore();
+  credentialsStore.loadToken(); // Load token from localStorage
+  
+  if (credentialsStore.token) {
+    profile();
+  } else {
+    console.log("📱 No token found, skipping profile fetch");
+    profileData.value = false;
+  }
 });
+
+// Close mobile menu when clicking outside
+const closeMobileMenu = () => {
+  showMobileMenu.value = false;
+  showDropdown.value = false;
+};
 </script>
+
 <template>
   <div class="w-full h-full mb-2 shadow-xl sticky top-0 bg-white z-50">
-    <div
-      class="flex lg:flex-row flex-col lg:gap-0 gap-5 justify-between items-center px-32 py-2"
-    >
-      <nuxt-link to="/">
+    <!-- Main Navbar -->
+    <div class="flex justify-between items-center px-4 sm:px-6 lg:px-32 py-3">
+      <!-- Logo -->
+      <nuxt-link to="/" class="flex-shrink-0">
         <img
           src="../assets/Logogsu.png"
           alt="Logo Perusahaan"
-          class="w-14 h-14"
+          class="w-12 h-12 sm:w-14 sm:h-14"
         />
       </nuxt-link>
-      <div class="flex items-center gap-2" v-if="profileData">
-        <div v-if="name === ''">{{ email }}</div>
-        <div v-else>{{ name }}</div>
-        <div class="flex items-center">
-          <NuxtLink to="/profile">
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-4" v-if="profileData">
+        <div class="flex items-center gap-2">
+          <div class="text-sm sm:text-base">
+            <div v-if="name === ''">{{ email }}</div>
+            <div v-else>{{ name }}</div>
+          </div>
+          <div class="flex items-center relative">
+            <NuxtLink to="/profile">
+              <div class="w-8 h-8 sm:w-10 sm:h-10">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 32 32"
+                  v-if="image === ''"
+                  class="text-gray-600"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M16 8a5 5 0 1 0 5 5a5 5 0 0 0-5-5m0 8a3 3 0 1 1 3-3a3.003 3.003 0 0 1-3 3"
+                  />
+                  <path
+                    fill="currentColor"
+                    d="M16 2a14 14 0 1 0 14 14A14.016 14.016 0 0 0 16 2m-6 24.377V25a3.003 3.003 0 0 1 3-3h6a3.003 3.003 0 0 1 3 3v1.377a11.9 11.9 0 0 1-12 0m13.993-1.451A5 5 0 0 0 19 20h-6a5 5 0 0 0-4.992 4.926a12 12 0 1 1 15.985 0"
+                  />
+                </svg>
+                <img
+                  v-else
+                  class="object-cover rounded-full w-full h-full bg-no-repeat bg-center"
+                  :src="`${$config.public.apiUrl}/profile/image/${image}`"
+                />
+              </div>
+            </NuxtLink>
+            <button @click="toggleDropdown" class="p-1">
+              <svg
+                :class="{ 'rotate-180': showDropdown }"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                class="transition-transform duration-200"
+              >
+                <path fill="currentColor" d="m7 10l5 5l5-5z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Desktop Dropdown -->
+        <div
+          v-if="showDropdown"
+          class="absolute bg-white shadow-lg rounded-md top-16 right-4 sm:right-6 lg:right-32 w-48 border border-gray-300 z-50"
+        >
+          <ul class="py-2">
+            <NuxtLink to="/profile" @click="showDropdown = false">
+              <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm">
+                Profile
+              </li>
+            </NuxtLink>
+            <NuxtLink to="/history" @click="showDropdown = false">
+              <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm">
+                History Pendaftaran
+              </li>
+            </NuxtLink>
+            <button @click="logout" class="w-full text-left">
+              <li class="px-4 py-2 hover:bg-red-50 hover:text-red-600 cursor-pointer text-sm">
+                Logout
+              </li>
+            </button>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Desktop Auth Buttons -->
+      <div class="hidden md:flex gap-3" v-else>
+        <nuxt-link
+          to="/login"
+          class="bg-[#3D365C] px-4 py-2 rounded-md text-white text-sm hover:bg-[#2d2548] transition-colors"
+        >
+          Login
+        </nuxt-link>
+        <nuxt-link
+          to="/register"
+          class="px-4 py-2 rounded-md border border-[#3D365C] text-[#3D365C] text-sm hover:bg-[#3D365C] hover:text-white transition-colors"
+        >
+          Register
+        </nuxt-link>
+      </div>
+
+      <!-- Mobile Hamburger Menu -->
+      <button 
+        @click="toggleMobileMenu"
+        class="md:hidden p-2 hover:bg-gray-100 rounded-md transition-colors"
+      >
+        <svg
+          v-if="!showMobileMenu"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <svg
+          v-else
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div
+      v-if="showMobileMenu"
+      class="md:hidden bg-white border-t border-gray-200 shadow-lg"
+    >
+      <div v-if="profileData" class="px-4 py-3 border-b border-gray-200">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 flex-shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="50"
-              height="50"
+              width="100%"
+              height="100%"
               viewBox="0 0 32 32"
               v-if="image === ''"
+              class="text-gray-600"
             >
               <path
                 fill="currentColor"
@@ -73,88 +232,87 @@ onMounted(() => {
                 d="M16 2a14 14 0 1 0 14 14A14.016 14.016 0 0 0 16 2m-6 24.377V25a3.003 3.003 0 0 1 3-3h6a3.003 3.003 0 0 1 3 3v1.377a11.9 11.9 0 0 1-12 0m13.993-1.451A5 5 0 0 0 19 20h-6a5 5 0 0 0-4.992 4.926a12 12 0 1 1 15.985 0"
               />
             </svg>
-            <div v-else class="w-10 h-10">
-              <img
-                class="object-cover rounded-full w-full h-full bg-no-repeat bg-center"
-                :src="`{$NUXT_PUBLIC_API_URL}/profile/image/${image}`"
-              />
-            </div>
-          </NuxtLink>
-          <div @click="toggleDropdown">
-            <svg
-              v-if="showDropdown"
-              class="rotate-180"
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-            >
-              <path fill="currentColor" d="m7 10l5 5l5-5z" />
-            </svg>
-            <svg
+            <img
               v-else
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-            >
-              <path fill="currentColor" d="m7 10l5 5l5-5z" />
-            </svg>
+              class="object-cover rounded-full w-full h-full bg-no-repeat bg-center"
+              :src="`${$config.public.apiUrl}/profile/image/${image}`"
+            />
+          </div>
+          <div>
+            <div class="font-medium text-gray-900">
+              <div v-if="name === ''">{{ email }}</div>
+              <div v-else>{{ name }}</div>
+            </div>
+            <div class="text-sm text-gray-500">Logged in</div>
           </div>
         </div>
-        <div
-          v-if="showDropdown"
-          class="absolute bg-white shadow-lg rounded-md top-36 lg:top-20 w-56 text-right border border-gray-300"
-        >
-          <ul class="flex flex-col gap-2 p-2">
-            <NuxtLink to="/profile">
-              <li
-                class="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:bg-slate-200"
-              >
-                Profile
-              </li>
-            </NuxtLink>
-            <NuxtLink to="/history">
-              <li
-                class="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:bg-slate-200"
-              >
-                History Pendaftaran
-              </li>
-            </NuxtLink>
-            <div @click="logout">
-              <li
-                class="px-4 py-2 hover:bg-gray-200 cursor-pointer hover:bg-slate-200"
-              >
-                Logout
-              </li>
+        
+        <div class="space-y-1">
+          <NuxtLink to="/profile" @click="closeMobileMenu">
+            <div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Profile</span>
             </div>
-          </ul>
+          </NuxtLink>
+          
+          <NuxtLink to="/history" @click="closeMobileMenu">
+            <div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-md transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+                <path d="M12 7v5l4 2"></path>
+              </svg>
+              <span>History Pendaftaran</span>
+            </div>
+          </NuxtLink>
+          
+          <button @click="logout" class="w-full">
+            <div class="flex items-center gap-3 px-3 py-2 hover:bg-red-50 hover:text-red-600 rounded-md transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16,17 21,12 16,7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              <span>Logout</span>
+            </div>
+          </button>
         </div>
       </div>
-      <div class="flex gap-5" v-else>
+
+      <!-- Mobile Auth Buttons -->
+      <div v-else class="px-4 py-3 space-y-2">
         <nuxt-link
           to="/login"
-          class="bg-[#3D365C] px-5 py-2 rounded-md text-white"
-          >Login</nuxt-link
+          @click="closeMobileMenu"
+          class="block w-full bg-[#3D365C] text-white text-center px-4 py-3 rounded-md hover:bg-[#2d2548] transition-colors"
         >
+          Login
+        </nuxt-link>
         <nuxt-link
           to="/register"
-          class="px-5 py-2 rounded-md border border-[#3D365C] text-[#3D365C]"
+          @click="closeMobileMenu"
+          class="block w-full border border-[#3D365C] text-[#3D365C] text-center px-4 py-3 rounded-md hover:bg-[#3D365C] hover:text-white transition-colors"
         >
-          Register</nuxt-link
-        >
+          Register
+        </nuxt-link>
       </div>
     </div>
+
+    <!-- WhatsApp Button -->
     <NuxtLink to="https://wa.me/6281330770221">
       <button
-        class="absolute bottom-[-700px] lg:bottom-[-900px] left-10 lg:left-5 z-50 bg-green-500 text-white p-2 rounded-xl rounded flex items-center gap-2 hover:bg-green-600 transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-white"
+        class="fixed bottom-4 left-4 z-50 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
       >
-        <span class="hidden lg:block">Butuh Bantuan?</span>
+        <span class="hidden sm:inline mr-2 text-sm">Butuh Bantuan?</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="31.76"
-          height="32"
+          width="20"
+          height="20"
           viewBox="0 0 256 258"
+          class="inline"
         >
           <defs>
             <linearGradient
@@ -193,5 +351,12 @@ onMounted(() => {
         </svg>
       </button>
     </NuxtLink>
+
+    <!-- Overlay for mobile menu -->
+    <!-- <div -->
+      <!-- v-if="showMobileMenu" -->
+      <!-- @click="closeMobileMenu" -->
+      <!-- class="md:hidden fixed inset-0 bg-black bg-opacity-25 z-40" -->
+    <!-- ></div> -->
   </div>
 </template>

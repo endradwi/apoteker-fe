@@ -59,6 +59,7 @@ export type dataPasien = {
   age: string;
   date: number;
   doctor: string;
+  complaint: string;
   rec_medic: string;
   status: string;
 }

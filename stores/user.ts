@@ -47,14 +47,28 @@ export const useUserStore = defineStore("user", {
     },
     async profile() {
       const { get } = useHttp();
+      const credentialsStore = useCredentialsStore();
+
+      // Check if token exists before making request
+      if (!credentialsStore.token && !localStorage.getItem("token")) {
+        console.warn("⚠️ No token available for profile request");
+        return null;
+      }
 
       try {
         const data = await get("users");
 
         this.user = data; // simpan ke state jika perlu
         return data;
-      } catch (error) {
+      } catch (error: any) {
         console.error("❌ Failed to fetch profile:", error);
+        
+        // If unauthorized, clear token
+        if (error?.response?.status === 401) {
+          console.warn("⚠️ Profile request unauthorized, clearing token");
+          credentialsStore.clearToken();
+        }
+        
         return null;
       }
     },

@@ -3,8 +3,6 @@ import { useCredentialsStore } from "@/stores/credentials";
 
 export default function useHttp() {
   const config = useRuntimeConfig();
-  const credentialsStore = useCredentialsStore();
-  const token = credentialsStore.token || localStorage.getItem("token");
 
   const fetcher = $fetch.create({
     baseURL: config.public.apiUrl as string,
@@ -12,6 +10,10 @@ export default function useHttp() {
     headers: {} as Record<string, string>, // <- paksa di sini
     onRequest({ options }) {
       const headers = new Headers();
+      
+      // Get fresh token on each request
+      const credentialsStore = useCredentialsStore();
+      const token = credentialsStore.token || localStorage.getItem("token");
   
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
@@ -21,7 +23,12 @@ export default function useHttp() {
     },   
     onResponseError({ response }) {
       if (response.status === 401) {
-        console.error("❌ Unauthorized");
+        console.error("❌ Unauthorized - Token may be invalid or expired");
+        // Clear token on 401 error
+        const credentialsStore = useCredentialsStore();
+        credentialsStore.clearToken();
+      } else if (response.status >= 500) {
+        console.error("❌ Server Error:", response.status, response.statusText);
       }
     }
   });

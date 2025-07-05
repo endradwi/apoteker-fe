@@ -53,95 +53,186 @@ const onClick = async () => {
 };
 </script>
 <template>
-  <div class="w-screen h-screen flex">
-    <div class="flex-1 lg:block items-end mt-32 hidden">
+  <div class="min-h-screen w-full flex flex-col lg:flex-row">
+    <!-- Image Section (Hidden on Mobile, First on Desktop) -->
+    <div class="hidden lg:flex lg:flex-1 relative overflow-hidden">
       <img
         src="@/assets/regisDoc.png"
-        alt="Register Dockter"
+        alt="Register Doctor"
         class="w-full h-full object-cover"
       />
-    </div>
-    <div
-      class="flex-1 bg-[#C95792]/90 lg:rounded-l-[200px] shadow-2xl shadow-[#3D365C]"
-    >
-      <div class="flex flex-col items-center justify-center h-full">
-        <img
-          src="@/assets/Logogsu.png"
-          alt="Logo Perusahaan"
-          class="w-20 h-20"
-        />
-        <div
-          class="bg-white w-96 h-96 rounded-xl shadow-lg flex flex-col items-center justify-center gap-5"
-        >
-          <h1 class="text-3xl font-bold">Register</h1>
-          <form
-            @submit.prevent="onClick"
-            class="flex flex-col gap-5 w-full px-10"
-          >
-            <div class="flex flex-col gap-2">
-              <label for="email" class="mr-2">Email</label>
+      
+      <!-- Overlay with info -->
+      <!-- <div class="absolute inset-0 bg-gradient-to-l from-black/20 to-transparent flex items-end p-8"> -->
+        <div class="text-white">
+          <h2 class="text-2xl xl:text-3xl font-bold mb-2">
+            Bergabunglah Dengan Kami
+          </h2>
+          <p class="text-lg xl:text-xl opacity-90">
+            Daftar untuk mengakses layanan kesehatan terpadu
+          </p>
+        </div>
+      </div>
+    <!-- </div> -->
+
+    <!-- Main Content Section -->
+    <div class="flex-1 bg-gradient-to-bl from-[#C95792] to-[#A64A7A] lg:rounded-l-[100px] xl:rounded-l-[200px] shadow-2xl">
+      <div class="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+        <!-- Logo -->
+        <div class="mb-6 lg:mb-8">
+          <img
+            src="@/assets/Logogsu.png"
+            alt="Logo Perusahaan"
+            class="w-16 h-16 sm:w-20 sm:h-20 mx-auto"
+          />
+        </div>
+
+        <!-- Register Form Card -->
+        <div class="bg-white w-full max-w-md lg:max-w-lg xl:max-w-xl rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-10">
+          <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 lg:mb-8">
+            Daftar Akun
+          </h1>
+          
+          <form @submit.prevent="onClick" class="space-y-5 lg:space-y-6">
+            <!-- Email Field -->
+            <div class="space-y-2">
+              <label for="email" class="block text-sm font-medium text-gray-700">
+                Email <span class="text-red-500">*</span>
+              </label>
               <input
-                type="text"
-                placeholder="Email"
+                id="email"
+                type="email"
+                placeholder="Masukkan email valid Anda"
                 v-model="email"
-                class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border focus:border-black focus:shadow-lg transition-all duration-300 ease-in-out"
+                required
+                autocomplete="email"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D365C] focus:border-transparent transition-all duration-300 text-sm sm:text-base"
               />
+              <p class="text-xs text-gray-500">
+                Email akan digunakan untuk login dan verifikasi akun
+              </p>
             </div>
-            <div class="flex flex-col gap-2">
-              <label for="password" class="mr-2">Password</label>
-              <div
-                class="flex border border-gray-300 rounded-md justify-between items-center pr-4 focus-within:border focus-within:border-black focus-within:shadow-lg transition-all duration-300 ease-in-out overflow-hidden"
-              >
+
+            <!-- Password Field -->
+            <div class="space-y-2">
+              <label for="password" class="block text-sm font-medium text-gray-700">
+                Password <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
                 <input
+                  id="password"
                   :type="eye ? 'text' : 'password'"
-                  placeholder="Password"
+                  placeholder="Buat password yang kuat"
                   v-model="password"
-                  class="px-4 py-2 outline-none w-full"
+                  required
+                  autocomplete="new-password"
+                  minlength="6"
+                  class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D365C] focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                 />
-                <!-- eye buka -->
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  v-if="eye"
+                <button
+                  type="button"
                   @click="togglePasswordVisibility"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 transition-colors"
                 >
-                  <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-                  <path
-                    fill="currentColor"
-                    d="M12 16q1.875 0 3.188-1.312T16.5 11.5t-1.312-3.187T12 7T8.813 8.313T7.5 11.5t1.313 3.188T12 16m0-1.8q-1.125 0-1.912-.788T9.3 11.5t.788-1.912T12 8.8t1.913.788t.787 1.912t-.787 1.913T12 14.2m0 4.8q-3.35 0-6.113-1.8t-4.362-4.75q-.125-.225-.187-.462t-.063-.488t.063-.488t.187-.462q1.6-2.95 4.363-4.75T12 4t6.113 1.8t4.362 4.75q.125.225.188.463t.062.487t-.062.488t-.188.462q-1.6 2.95-4.362 4.75T12 19m0-2q2.825 0 5.188-1.487T20.8 11.5q-1.25-2.525-3.613-4.012T12 6T6.813 7.488T3.2 11.5q1.25 2.525 3.613 4.013T12 17"
-                  />
-                </svg>
-                <!-- // eye tutup -->
-                <svg
-                  v-else
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  @click="togglePasswordVisibility"
-                >
-                  <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-                  <path
-                    fill="currentColor"
-                    d="M15.175 8.325q.725.725 1.063 1.65t.237 1.9q0 .375-.275.638t-.65.262t-.638-.262t-.262-.638q.125-.65-.075-1.25T13.95 9.6t-1.025-.65t-1.275-.1q-.375 0-.638-.275t-.262-.65t.263-.637t.637-.263q.95-.1 1.875.238t1.65 1.062M12 6q-.475 0-.925.037t-.9.138q-.425.075-.763-.125t-.462-.6t.088-.775t.612-.45q.575-.125 1.163-.175T12 4q3.425 0 6.263 1.8t4.337 4.85q.1.2.15.413t.05.437t-.038.438t-.137.412q-.45 1-1.112 1.875t-1.463 1.6q-.3.275-.7.225t-.65-.4t-.212-.763t.337-.687q.6-.575 1.1-1.25t.875-1.45q-1.25-2.525-3.613-4.012T12 6m0 13q-3.35 0-6.125-1.812T1.5 12.425q-.125-.2-.187-.437T1.25 11.5t.05-.475t.175-.45q.5-1 1.163-1.912T4.15 7L2.075 4.9q-.275-.3-.262-.712T2.1 3.5t.7-.275t.7.275l17 17q.275.275.288.688t-.288.712q-.275.275-.7.275t-.7-.275l-3.5-3.45q-.875.275-1.775.413T12 19M5.55 8.4q-.725.65-1.325 1.425T3.2 11.5q1.25 2.525 3.613 4.013T12 17q.5 0 .975-.062t.975-.138l-.9-.95q-.275.075-.525.113T12 16q-1.875 0-3.188-1.312T7.5 11.5q0-.275.038-.525t.112-.525zm4.2 4.2"
-                  />
-                </svg>
+                  <!-- Eye Open Icon -->
+                  <svg
+                    v-if="eye"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  
+                  <!-- Eye Closed Icon -->
+                  <svg
+                    v-else
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+              <div class="text-xs text-gray-500 space-y-1">
+                <p>Password harus mengandung minimal:</p>
+                <ul class="list-disc list-inside space-y-0.5 ml-2">
+                  <li>6 karakter atau lebih</li>
+                  <li>1 huruf besar atau 1 angka</li>
+                </ul>
               </div>
             </div>
+
+            <!-- Terms and Conditions -->
+            <div class="flex items-start space-x-3">
+              <input
+                id="terms"
+                type="checkbox"
+                required
+                class="mt-1 h-4 w-4 text-[#3D365C] focus:ring-[#3D365C] border-gray-300 rounded"
+              />
+              <label for="terms" class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                Saya menyetujui 
+                <a href="#" class="text-[#3D365C] hover:text-[#2d2548] underline">
+                  Syarat dan Ketentuan
+                </a> 
+                serta 
+                <a href="#" class="text-[#3D365C] hover:text-[#2d2548] underline">
+                  Kebijakan Privasi
+                </a> 
+                yang berlaku
+              </label>
+            </div>
+
+            <!-- Submit Button -->
             <button
               type="submit"
-              class="bg-[#3D365C] text-white rounded-md px-4 py-2 font-bold text-center"
+              class="w-full bg-[#3D365C] text-white py-3 px-4 rounded-lg font-semibold text-sm sm:text-base hover:bg-[#2d2548] focus:outline-none focus:ring-2 focus:ring-[#3D365C] focus:ring-offset-2 transform hover:scale-[1.02] transition-all duration-300 shadow-lg"
             >
-              Register
+              Daftar Sekarang
             </button>
           </form>
-          <p class="text-sm text-gray-500">
+
+          <!-- Login Link -->
+          <p class="text-center text-sm sm:text-base text-gray-600 mt-6 lg:mt-8">
             Sudah punya akun?
-            <NuxtLink to="/login" class="text-[#3D365C] underline"
-              >Login</NuxtLink
+            <NuxtLink 
+              to="/login" 
+              class="text-[#3D365C] font-semibold hover:text-[#2d2548] underline underline-offset-2 hover:underline-offset-4 transition-all duration-300"
             >
+              Masuk di sini
+            </NuxtLink>
+          </p>
+
+          <!-- Social Proof -->
+          <div class="mt-6 pt-6 border-t border-gray-200">
+            <div class="flex items-center justify-center space-x-2 text-xs sm:text-sm text-gray-500">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 12l2 2 4-4"></path>
+                <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
+                <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
+                <path d="M3 12v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6"></path>
+              </svg>
+              <span>Data Anda aman dan terlindungi</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info for Mobile -->
+        <div class="mt-6 text-center text-white/90 lg:hidden">
+          <p class="text-xs sm:text-sm max-w-sm mx-auto">
+            Daftar untuk mengakses layanan kesehatan terpadu dan manajemen farmasi
           </p>
         </div>
       </div>
@@ -150,7 +241,65 @@ const onClick = async () => {
 </template>
 
 <style scoped>
-/* * {
-  font-family: "Mulish";
-} */
+/* Custom focus styles for better accessibility */
+input:focus, input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 3px rgba(61, 54, 92, 0.1);
+}
+
+/* Custom button hover effects */
+button[type="submit"]:hover {
+  box-shadow: 0 10px 25px rgba(61, 54, 92, 0.3);
+}
+
+/* Custom checkbox styling */
+input[type="checkbox"]:checked {
+  background-color: #3D365C;
+  border-color: #3D365C;
+}
+
+/* Responsive text sizing */
+@media (max-width: 640px) {
+  .text-responsive {
+    font-size: 14px;
+  }
+}
+
+/* Link hover effects */
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Form validation states */
+input:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: #ef4444;
+}
+
+input:valid:not(:focus):not(:placeholder-shown) {
+  border-color: #10b981;
+}
+
+/* Loading state for submit button */
+button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
 </style>

@@ -63,7 +63,6 @@ const onClick = async () => {
       />
       
       <!-- Overlay with info -->
-      <!-- <div class="absolute inset-0 bg-gradient-to-l from-black/20 to-transparent flex items-end p-8"> -->
         <div class="text-white">
           <h2 class="text-2xl xl:text-3xl font-bold mb-2">
             Bergabunglah Dengan Kami

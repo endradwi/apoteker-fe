@@ -324,7 +324,7 @@ onMounted(() => {
       </div>
 
       <!-- Modal -->
-      <ModalEditPasien
+      <ModalEditPasienasien
         v-if="modalOpenEditUser"
         :user="selectedUser"
         @close="modalOpenEditUser = false"

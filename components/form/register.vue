@@ -33,7 +33,7 @@ const errors = ref({
 
 function validateForm() {
   // Reset errors
-  Object.keys(errors.value).forEach(key => {
+  Object.keys(errors.value).forEach((key) => {
     errors.value[key as keyof typeof errors.value] = "";
   });
 
@@ -51,12 +51,12 @@ function validateForm() {
     errors.value.phone_number = "Format nomor telepon tidak valid";
     isValid = false;
   }
+  const match = age.value.match(/\d+/);
+  console.log("Age match:", match);
+  const cleanedAge = match?.input?.split(" ").slice(0, 1).join("");
 
-  if (!age.value.trim()) {
+  if (!cleanedAge) {
     errors.value.age = "Umur harus diisi";
-    isValid = false;
-  } else if (isNaN(Number(age.value)) || Number(age.value) < 1 || Number(age.value) > 120) {
-    errors.value.age = "Umur harus berupa angka antara 1-120";
     isValid = false;
   }
 
@@ -67,7 +67,7 @@ function validateForm() {
     const selectedDate = new Date(date.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (selectedDate < today) {
       errors.value.date = "Tanggal periksa tidak boleh di masa lalu";
       isValid = false;
@@ -83,6 +83,8 @@ function validateForm() {
     errors.value.complaint = "Keluhan harus diisi";
     isValid = false;
   }
+  console.log("Form validation errors:", errors.value);
+  console.log("Age value:", age.value);
 
   return isValid;
 }
@@ -116,16 +118,18 @@ async function reserve() {
 
   try {
     isSubmitting.value = true;
-    
+
+    const matched = age.value.match(/\d+/);
+    const cleanedAge = matched?.input?.split(" ").slice(0, 1).join("");
     const data = {
       name: name.value.trim(),
       phone_number: phone_number.value.trim(),
-      age: age.value.trim(),
+      age: cleanedAge || "",
       date: formatDateToISOString(date.value),
       doctor: doctor.value,
       complaint: complaint.value.trim(),
     };
-    
+
     const response = (await store.reserve(
       data.name,
       data.phone_number,
@@ -134,14 +138,12 @@ async function reserve() {
       data.doctor,
       data.complaint
     )) as reserveResponse;
-    
-    console.log("Reservation response: ", response);
-    
+
     await Swal.fire({
       icon: response?.success ? "success" : "error",
       title: response?.success ? "Pendaftaran Berhasil!" : "Pendaftaran Gagal",
-      text: response?.success 
-        ? "Pendaftaran berhasil! Silahkan datang sesuai tanggal yang telah dipilih" 
+      text: response?.success
+        ? "Pendaftaran berhasil! Silahkan datang sesuai tanggal yang telah dipilih"
         : "Terjadi kesalahan saat mendaftar. Silahkan coba lagi.",
       timer: 5000,
       showConfirmButton: true,
@@ -158,9 +160,9 @@ async function reserve() {
       doctor.value = "";
       complaint.value = "";
       arrow.value = false;
-      
+
       // Reset errors
-      Object.keys(errors.value).forEach(key => {
+      Object.keys(errors.value).forEach((key) => {
         errors.value[key as keyof typeof errors.value] = "";
       });
     }
@@ -179,46 +181,58 @@ async function reserve() {
 
 // Close dropdown when clicking outside
 function handleClickOutside(event: Event) {
-  const dropdown = document.getElementById('doctor-dropdown');
-  const trigger = document.getElementById('doctor-trigger');
-  
-  if (arrow.value && 
-      dropdown && 
-      !dropdown.contains(event.target as Node) && 
-      trigger && 
-      !trigger.contains(event.target as Node)) {
+  const dropdown = document.getElementById("doctor-dropdown");
+  const trigger = document.getElementById("doctor-trigger");
+
+  if (
+    arrow.value &&
+    dropdown &&
+    !dropdown.contains(event.target as Node) &&
+    trigger &&
+    !trigger.contains(event.target as Node)
+  ) {
     arrow.value = false;
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
+  document.addEventListener("click", handleClickOutside);
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener("click", handleClickOutside);
 });
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-6 sm:py-8 lg:py-12">
+  <div
+    class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-6 sm:py-8 lg:py-12"
+  >
     <!-- Mobile-first responsive container -->
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-      
       <!-- Header Section -->
       <div class="text-center mb-8 lg:mb-12">
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-gray-800 mb-4">
+        <h1
+          class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-gray-800 mb-4"
+        >
           Pendaftaran Pasien
         </h1>
-        <p class="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
-          Silahkan isi form di bawah ini untuk mendaftar sebagai pasien di Griya Sehat Ummi
+        <p
+          class="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto"
+        >
+          Silahkan isi form di bawah ini untuk mendaftar sebagai pasien di Griya
+          Sehat Ummi
         </p>
       </div>
 
       <!-- Registration Form Card -->
-      <div class="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+      <div
+        class="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden"
+      >
         <!-- Card Header -->
-        <div class="bg-gradient-to-r from-[#C95792] to-[#A64A7A] px-6 sm:px-8 py-6 sm:py-8">
+        <div
+          class="bg-gradient-to-r from-[#C95792] to-[#A64A7A] px-6 sm:px-8 py-6 sm:py-8"
+        >
           <h2 class="text-xl sm:text-2xl font-bold text-white text-center">
             Form Pendaftaran
           </h2>
@@ -230,10 +244,12 @@ onBeforeUnmount(() => {
         <!-- Form Content -->
         <div class="p-6 sm:p-8 lg:p-10">
           <form @submit.prevent="reserve" class="space-y-6">
-            
             <!-- Full Name Field -->
             <div class="space-y-2">
-              <label for="fullname" class="block text-sm font-semibold text-gray-700">
+              <label
+                for="fullname"
+                class="block text-sm font-semibold text-gray-700"
+              >
                 Nama Lengkap <span class="text-red-500">*</span>
               </label>
               <input
@@ -243,9 +259,9 @@ onBeforeUnmount(() => {
                 placeholder="Masukan nama lengkap Anda"
                 :class="[
                   'w-full px-4 py-3 sm:py-4 border-2 rounded-xl transition-all duration-200 text-sm sm:text-base touch-feedback',
-                  errors.name 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20'
+                  errors.name
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                    : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20',
                 ]"
                 :style="{ fontSize: '16px' }"
               />
@@ -256,7 +272,10 @@ onBeforeUnmount(() => {
 
             <!-- Phone Number Field -->
             <div class="space-y-2">
-              <label for="phone_number" class="block text-sm font-semibold text-gray-700">
+              <label
+                for="phone_number"
+                class="block text-sm font-semibold text-gray-700"
+              >
                 Nomor Telepon <span class="text-red-500">*</span>
               </label>
               <input
@@ -266,24 +285,30 @@ onBeforeUnmount(() => {
                 placeholder="Contoh: 081234567890"
                 :class="[
                   'w-full px-4 py-3 sm:py-4 border-2 rounded-xl transition-all duration-200 text-sm sm:text-base touch-feedback',
-                  errors.phone_number 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20'
+                  errors.phone_number
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                    : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20',
                 ]"
                 :style="{ fontSize: '16px' }"
               />
-              <p v-if="errors.phone_number" class="text-red-500 text-sm font-medium">
+              <p
+                v-if="errors.phone_number"
+                class="text-red-500 text-sm font-medium"
+              >
                 {{ errors.phone_number }}
               </p>
             </div>
 
             <!-- Age Field -->
             <div class="space-y-2">
-              <label for="age" class="block text-sm font-semibold text-gray-700">
+              <label
+                for="age"
+                class="block text-sm font-semibold text-gray-700"
+              >
                 Umur <span class="text-red-500">*</span>
               </label>
               <input
-                type="number"
+                type="text"
                 v-model="age"
                 id="age"
                 placeholder="Masukan umur dalam tahun"
@@ -291,9 +316,9 @@ onBeforeUnmount(() => {
                 max="120"
                 :class="[
                   'w-full px-4 py-3 sm:py-4 border-2 rounded-xl transition-all duration-200 text-sm sm:text-base touch-feedback',
-                  errors.age 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20'
+                  errors.age
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                    : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20',
                 ]"
                 :style="{ fontSize: '16px' }"
               />
@@ -304,7 +329,10 @@ onBeforeUnmount(() => {
 
             <!-- Date Field -->
             <div class="space-y-2">
-              <label for="date" class="block text-sm font-semibold text-gray-700">
+              <label
+                for="date"
+                class="block text-sm font-semibold text-gray-700"
+              >
                 Tanggal Periksa <span class="text-red-500">*</span>
               </label>
               <div @click="openDatePicker" class="cursor-pointer relative">
@@ -315,15 +343,33 @@ onBeforeUnmount(() => {
                   id="date"
                   :class="[
                     'w-full px-4 py-3 sm:py-4 border-2 rounded-xl transition-all duration-200 text-sm sm:text-base touch-feedback cursor-pointer',
-                    errors.date 
-                      ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                      : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20'
+                    errors.date
+                      ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                      : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20',
                   ]"
                   :style="{ fontSize: '16px' }"
                 />
-                <div class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-400">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <div
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    class="text-gray-400"
+                  >
+                    <rect
+                      x="3"
+                      y="4"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      ry="2"
+                    ></rect>
                     <line x1="16" y1="2" x2="16" y2="6"></line>
                     <line x1="8" y1="2" x2="8" y2="6"></line>
                     <line x1="3" y1="10" x2="21" y2="10"></line>
@@ -337,7 +383,10 @@ onBeforeUnmount(() => {
 
             <!-- Doctor Selection -->
             <div class="space-y-2">
-              <label for="doctor" class="block text-sm font-semibold text-gray-700">
+              <label
+                for="doctor"
+                class="block text-sm font-semibold text-gray-700"
+              >
                 Pilih Dokter <span class="text-red-500">*</span>
               </label>
               <div class="relative">
@@ -345,13 +394,16 @@ onBeforeUnmount(() => {
                   id="doctor-trigger"
                   :class="[
                     'w-full px-4 py-3 sm:py-4 border-2 rounded-xl cursor-pointer flex justify-between items-center transition-all duration-200 touch-feedback',
-                    errors.doctor 
-                      ? 'border-red-300 focus:border-red-500' 
-                      : 'border-gray-300 hover:border-[#C95792]'
+                    errors.doctor
+                      ? 'border-red-300 focus:border-red-500'
+                      : 'border-gray-300 hover:border-[#C95792]',
                   ]"
                   @click="toggleArrow"
                 >
-                  <span :class="doctor ? 'text-gray-800' : 'text-gray-500'" class="text-sm sm:text-base">
+                  <span
+                    :class="doctor ? 'text-gray-800' : 'text-gray-500'"
+                    class="text-sm sm:text-base"
+                  >
                     {{ doctor || "Pilih dokter yang tersedia" }}
                   </span>
                   <svg
@@ -405,7 +457,10 @@ onBeforeUnmount(() => {
 
             <!-- Complaint Field -->
             <div class="space-y-2">
-              <label for="complaint" class="block text-sm font-semibold text-gray-700">
+              <label
+                for="complaint"
+                class="block text-sm font-semibold text-gray-700"
+              >
                 Keluhan <span class="text-red-500">*</span>
               </label>
               <textarea
@@ -415,13 +470,16 @@ onBeforeUnmount(() => {
                 rows="4"
                 :class="[
                   'w-full px-4 py-3 sm:py-4 border-2 rounded-xl transition-all duration-200 text-sm sm:text-base resize-none touch-feedback',
-                  errors.complaint 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
-                    : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20'
+                  errors.complaint
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                    : 'border-gray-300 focus:border-[#C95792] focus:ring-[#C95792]/20',
                 ]"
                 :style="{ fontSize: '16px' }"
               ></textarea>
-              <p v-if="errors.complaint" class="text-red-500 text-sm font-medium">
+              <p
+                v-if="errors.complaint"
+                class="text-red-500 text-sm font-medium"
+              >
                 {{ errors.complaint }}
               </p>
             </div>
@@ -433,14 +491,29 @@ onBeforeUnmount(() => {
                 :disabled="isSubmitting"
                 class="w-full bg-gradient-to-r from-[#C95792] to-[#A64A7A] hover:from-[#A64A7A] hover:to-[#8B3A6B] text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl touch-feedback text-sm sm:text-base"
               >
-                <span v-if="!isSubmitting" class="flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"></path>
+                <span
+                  v-if="!isSubmitting"
+                  class="flex items-center justify-center gap-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"
+                    ></path>
                   </svg>
                   Daftar Sekarang
                 </span>
                 <span v-else class="flex items-center justify-center gap-2">
-                  <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <div
+                    class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"
+                  ></div>
                   Mendaftar...
                 </span>
               </button>
@@ -449,7 +522,16 @@ onBeforeUnmount(() => {
             <!-- Info Text -->
             <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-6">
               <div class="flex items-start gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-600 mt-0.5 flex-shrink-0">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  class="text-blue-600 mt-0.5 flex-shrink-0"
+                >
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="12" y1="16" x2="12" y2="12"></line>
                   <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -459,12 +541,13 @@ onBeforeUnmount(() => {
                   <ul class="space-y-1 text-xs sm:text-sm">
                     <li>• Harap datang 15 menit sebelum jadwal yang dipilih</li>
                     <li>• Bawa kartu identitas (KTP/SIM/Paspor)</li>
-                    <li>• Jika ada perubahan jadwal, hubungi kami di WhatsApp</li>
+                    <li>
+                      • Jika ada perubahan jadwal, hubungi kami di WhatsApp
+                    </li>
                   </ul>
                 </div>
               </div>
             </div>
-
           </form>
         </div>
       </div>
@@ -480,7 +563,7 @@ onBeforeUnmount(() => {
 }
 
 .touch-feedback::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: currentColor;
@@ -514,8 +597,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Loading animation */
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin {

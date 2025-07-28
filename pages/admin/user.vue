@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { editUser } from "~/types/user";
+import Swal from "sweetalert2";
+const SwalInstance = Swal as any;
 
 definePageMeta({
   layout: "admin",
@@ -48,20 +50,47 @@ function toggleCreateAdmin() {
   modalOpenCreateAdmin.value = !modalOpenCreateAdmin.value;
 }
 async function deleteUser(user: editUser) {
-  // Add confirmation dialog
-  const confirmed = confirm(`Apakah Anda yakin ingin menghapus user "${user.fullname}"?`);
-  if (!confirmed) return;
+  // Add confirmation dialog using SweetAlert2
+  const result = await SwalInstance.fire({
+    title: 'Konfirmasi Hapus',
+    text: `Apakah Anda yakin ingin menghapus user "${user.fullname}"?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal'
+  });
+
+  if (!result.isConfirmed) return;
 
   try {
     const response = await store.deleteUser(user.id);
     if (response) {
       console.log("User deleted successfully");
+      await SwalInstance.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: 'User berhasil dihapus',
+        timer: 2000,
+        showConfirmButton: false
+      });
       getAllUser(currentPage.value, searchQuery.value); // Refresh the user list
     } else {
       console.error("Failed to delete user");
+      await SwalInstance.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: 'Gagal menghapus user. Silakan coba lagi.',
+      });
     }
   } catch (error) {
     console.error("Error deleting user:", error);
+    await SwalInstance.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'Terjadi kesalahan saat menghapus user. Silakan coba lagi.',
+    });
   }
 }
 
@@ -343,13 +372,13 @@ onMounted(() => {
         v-if="modalOpenEditUser"
         :user="selectedUser"
         @close="modalOpenEditUser = false"
-        @refresh="getAllUser"
+        @refresh="() => getAllUser(currentPage, searchQuery)"
       />
       
       <ModalCreateAdmin
         v-if="modalOpenCreateAdmin"
         @close="modalOpenCreateAdmin = false"
-        @refresh="getAllUser"
+        @refresh="() => getAllUser(currentPage, searchQuery)"
       />
     </div>
   </div>

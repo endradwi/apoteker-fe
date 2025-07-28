@@ -1,32 +1,64 @@
 <script lang="ts" setup>
 import type { editUser } from "~/types/user";
+import Swal from "sweetalert2";
+const SwalInstance = Swal as any;
 
 const store = useUserStore();
-const editOpen = ref(false);
-const users = ref<editUser[]>([]);
 const editUser = ref<editUser | null>(null);
+const isLoading = ref(false);
 
 const props = defineProps<{
   user: editUser | null;
 }>();
 
+const emit = defineEmits<{
+  close: [];
+  refresh: [];
+}>();
+
 async function editProfile() {
   if (!editUser.value) return;
 
-  const response = await store.updateStatus(
-    editUser.value.id,
-    editUser.value.role_id
-  );
+  try {
+    isLoading.value = true;
+    const response = await store.updateStatus(
+      editUser.value.id,
+      editUser.value.role_id
+    );
 
-  // Update user di list users
-  const index = users.value.findIndex((u) => u.id === editUser.value?.id);
-
-  if (index !== -1) {
-    users.value[index] = { ...editUser.value };
+    if (response) {
+      console.log("User updated successfully");
+      // Show success message
+      await SwalInstance.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: 'User berhasil diupdate',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      // Emit events to parent component
+      emit('refresh');
+      emit('close');
+    } else {
+      console.error("Failed to update user");
+      await SwalInstance.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: 'Gagal mengupdate user. Silakan coba lagi.',
+      });
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
+    await SwalInstance.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'Terjadi kesalahan saat mengupdate user. Silakan coba lagi.',
+    });
+  } finally {
+    isLoading.value = false;
   }
-
-  editOpen.value = false;
 }
+
 watch(
   () => props.user,
   (newUser) => {
@@ -86,13 +118,19 @@ watch(
       </div>
 
       <div class="flex gap-2">
-        <button type="submit" class="bg-green-500 text-white py-1 px-4 rounded">
-          Simpan
+        <button 
+          type="submit" 
+          :disabled="isLoading"
+          class="bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white py-2 px-4 rounded transition-colors flex items-center gap-2"
+        >
+          <div v-if="isLoading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          {{ isLoading ? 'Menyimpan...' : 'Simpan' }}
         </button>
         <button
           type="button"
-          class="bg-gray-400 text-white py-1 px-4 rounded"
-          @click="editOpen = false"
+          :disabled="isLoading"
+          class="bg-gray-400 hover:bg-gray-500 disabled:bg-gray-300 text-white py-2 px-4 rounded transition-colors"
+          @click="emit('close')"
         >
           Batal
         </button>

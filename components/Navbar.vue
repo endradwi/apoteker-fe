@@ -351,12 +351,5 @@ const closeMobileMenu = () => {
         </svg>
       </button>
     </NuxtLink>
-
-    <!-- Overlay for mobile menu -->
-    <!-- <div -->
-      <!-- v-if="showMobileMenu" -->
-      <!-- @click="closeMobileMenu" -->
-      <!-- class="md:hidden fixed inset-0 bg-black bg-opacity-25 z-40" -->
-    <!-- ></div> -->
   </div>
 </template>

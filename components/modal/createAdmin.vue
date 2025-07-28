@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import Swal from "sweetalert2";
+const SwalInstance = Swal as any;
+
 const store = useUserStore();
 const full_name = ref("");
 const phone_number = ref("");
@@ -6,22 +9,68 @@ const email = ref("");
 const password = ref("");
 const role_id = ref(1); // Default to Admin role
 const eye = ref(false);
+const isLoading = ref(false);
+
+const emit = defineEmits<{
+  close: [];
+  refresh: [];
+}>();
+
 const togglePasswordVisibility = () => {
   eye.value = !eye.value;
 };
 
+function resetForm() {
+  full_name.value = "";
+  phone_number.value = "";
+  email.value = "";
+  password.value = "";
+  role_id.value = 1;
+  eye.value = false;
+}
+
 async function createAdmin() {
-  const response = await store.createAdmin({
-    fullname: full_name.value,
-    phone_number: phone_number.value,
-    email: email.value,
-    password: password.value,
-    role_id: role_id.value,
-  });
-  if (response) {
-    console.log("Admin created successfully:", response);
-  } else {
-    console.error("Failed to create admin");
+  try {
+    isLoading.value = true;
+    const response = await store.createAdmin({
+      fullname: full_name.value,
+      phone_number: phone_number.value,
+      email: email.value,
+      password: password.value,
+      role_id: role_id.value,
+    });
+    
+    if (response) {
+      console.log("Admin created successfully:", response);
+      // Show success message
+      await SwalInstance.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: 'Tambah Akun Berhasil',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      // Reset form and emit events
+      resetForm();
+      emit('refresh');
+      emit('close');
+    } else {
+      console.error("Failed to create admin");
+      await SwalInstance.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: 'Gagal membuat admin. Silakan coba lagi.',
+      });
+    }
+  } catch (error) {
+    console.error("Error creating admin:", error);
+    await SwalInstance.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'Terjadi kesalahan saat membuat admin. Silakan coba lagi.',
+    });
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>
@@ -37,7 +86,8 @@ async function createAdmin() {
           v-model="full_name"
           type="text"
           required
-          class="border border-gray-300 p-2 rounded w-full"
+          :disabled="isLoading"
+          class="border border-gray-300 p-2 rounded w-full disabled:bg-gray-100"
         />
       </div>
 
@@ -47,7 +97,8 @@ async function createAdmin() {
           v-model="phone_number"
           type="text"
           required
-          class="border border-gray-300 p-2 rounded w-full"
+          :disabled="isLoading"
+          class="border border-gray-300 p-2 rounded w-full disabled:bg-gray-100"
         />
       </div>
 
@@ -57,7 +108,8 @@ async function createAdmin() {
           v-model="email"
           type="email"
           required
-          class="border border-gray-300 p-2 rounded w-full"
+          :disabled="isLoading"
+          class="border border-gray-300 p-2 rounded w-full disabled:bg-gray-100"
         />
       </div>
 
@@ -69,7 +121,8 @@ async function createAdmin() {
           v-model="password"
           :type="eye ? 'text' : 'password'"
           required
-          class="p-2 rounded w-full outline-none"
+          :disabled="isLoading"
+          class="p-2 rounded w-full outline-none disabled:bg-gray-100"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -78,6 +131,7 @@ async function createAdmin() {
           viewBox="0 0 24 24"
           v-if="eye"
           @click="togglePasswordVisibility"
+          class="cursor-pointer"
         >
           <path
             fill="currentColor"
@@ -91,6 +145,7 @@ async function createAdmin() {
           height="32"
           viewBox="0 0 24 24"
           @click="togglePasswordVisibility"
+          class="cursor-pointer"
         >
           <path
             fill="currentColor"
@@ -103,7 +158,8 @@ async function createAdmin() {
         <select
           v-model="role_id"
           required
-          class="border border-gray-300 p-2 rounded w-full"
+          :disabled="isLoading"
+          class="border border-gray-300 p-2 rounded w-full disabled:bg-gray-100"
         >
           <option :value="1">Admin</option>
           <option :value="2">Users</option>
@@ -111,13 +167,19 @@ async function createAdmin() {
       </div>
 
       <div class="flex gap-2">
-        <button type="submit" class="bg-green-500 text-white py-1 px-4 rounded">
-          Simpan
+        <button 
+          type="submit" 
+          :disabled="isLoading"
+          class="bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white py-2 px-4 rounded transition-colors flex items-center gap-2"
+        >
+          <div v-if="isLoading" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          {{ isLoading ? 'Menyimpan...' : 'Simpan' }}
         </button>
         <button
           type="button"
-          class="bg-gray-400 text-white py-1 px-4 rounded"
-          @click="$emit('close')"
+          :disabled="isLoading"
+          class="bg-gray-400 hover:bg-gray-500 disabled:bg-gray-300 text-white py-2 px-4 rounded transition-colors"
+          @click="emit('close')"
         >
           Batal
         </button>

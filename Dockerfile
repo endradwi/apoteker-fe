@@ -1,5 +1,5 @@
 # Gunakan image resmi node
-FROM node:18
+FROM node:18-bullseye
 
 # Buat direktori kerja
 WORKDIR /app

@@ -324,12 +324,12 @@ onMounted(() => {
       </div>
 
       <!-- Modal -->
-      <ModalEditPasienasien
+      <ModalEditPasien
         v-if="modalOpenEditUser"
         :user="selectedUser"
         @close="modalOpenEditUser = false"
         @refresh="getAllPasien"
-        class="z-50 absolute w-full items-center justify-center top-32"
+        class="z-50 absolute w-full items-center justify-center"
       />
     </div>
   </div>

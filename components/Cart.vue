@@ -15,7 +15,7 @@ async function fetchHistory(page = 1, search = "") {
     isLoading.value = true;
     currentPage.value = page;
     const response = (await store.getHistory(page, search)) as any;
-    
+
     if (response) {
       const results = (response as any).results;
       items.value = results;
@@ -57,6 +57,8 @@ function parseHtmlListToText(html: string): string[] {
 function generateSinglePDF(item: any) {
   if (process.client) {
     const doc = new $jsPDF();
+    console.log("docs", doc);
+    console.log("item", item);
 
     doc.setFontSize(12);
 
@@ -69,13 +71,38 @@ function generateSinglePDF(item: any) {
     doc.setFont("Helvetica", "normal");
     doc.text(`Nama: ${item.fullname}`, 14, y);
     y += 7;
+    doc.text(`Umur: ${item.age} Tahun`, 14, y);
+    y += 7;
     doc.text(`Tanggal Periksa: ${tanggal}`, 14, y);
     y += 7;
     doc.text(`Dengan Dokter: ${item.doctor}`, 14, y);
     y += 7;
-    doc.text("Catatan Dokter:", 14, y);
+
+    // Label keluhan
+    doc.text("Keluhan:", 14, y);
     y += 7;
 
+    // Ubah jadi list kalau ada koma
+    let keluhan = item.complaint || "-";
+    if (keluhan.includes(",")) {
+      const convertedKeluhan = keluhan
+        .split(",")
+        .map((part: string) => `<li>${part.trim()}</li>`)
+        .join("");
+      keluhan = `<ol>${convertedKeluhan}</ol>`;
+    }
+
+    // Tulis keluhan ke PDF (sudah dalam bentuk list atau teks biasa)
+    parseHtmlListToText(keluhan).forEach((line: string) => {
+      const wrapped = doc.splitTextToSize(line, 170);
+      wrapped.forEach((wrapLine: string) => {
+        doc.text(wrapLine, 14, y);
+        y += 7;
+      });
+    });
+
+    doc.text("Catatan Dokter:", 14, y);
+    y += 7;
     const parsedLines = parseHtmlListToText(item.rec_medic || "-");
 
     parsedLines.forEach((line: string) => {
@@ -91,12 +118,12 @@ function generateSinglePDF(item: any) {
 }
 
 function getStatusColor(status: string) {
-  if (status === 'pending' || status === 'Pending') {
-    return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-  } else if (status === 'completed') {
-    return 'bg-green-100 text-green-800 border-green-200';
+  if (status === "pending" || status === "Pending") {
+    return "bg-yellow-100 text-yellow-800 border-yellow-200";
+  } else if (status === "completed") {
+    return "bg-green-100 text-green-800 border-green-200";
   } else {
-    return 'bg-red-100 text-red-800 border-red-200';
+    return "bg-red-100 text-red-800 border-red-200";
   }
 }
 
@@ -109,22 +136,25 @@ onMounted(() => {
   <div class="min-h-screen bg-gray-50">
     <!-- Mobile-first responsive container -->
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-      
       <!-- Header Section -->
       <div class="mb-6 lg:mb-8">
         <!-- Mobile menu spacing for admin pages -->
         <div class="lg:hidden h-16"></div>
-        
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
           <div>
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-gray-800 mb-2">
+            <h1
+              class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-gray-800 mb-2"
+            >
               History Pendaftaran
             </h1>
             <p class="text-sm sm:text-base text-gray-600">
               Riwayat pendaftaran dan catatan medis Anda
             </p>
           </div>
-          
+
           <!-- Search Box -->
           <div class="relative w-full sm:w-auto sm:min-w-[300px]">
             <input
@@ -133,7 +163,9 @@ onMounted(() => {
               placeholder="Cari nama pasien..."
               class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C95792] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
             />
-            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <div
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -154,7 +186,9 @@ onMounted(() => {
       <!-- Loading State -->
       <div v-if="isLoading" class="flex items-center justify-center py-12">
         <div class="flex items-center gap-3">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C95792]"></div>
+          <div
+            class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C95792]"
+          ></div>
           <span class="text-gray-600">Memuat data...</span>
         </div>
       </div>
@@ -190,30 +224,46 @@ onMounted(() => {
             <div class="space-y-3">
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">No. Telepon</p>
-                  <p class="text-sm font-medium text-gray-800">{{ item.phone_number }}</p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    No. Telepon
+                  </p>
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ item.phone_number }}
+                  </p>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">Umur</p>
-                  <p class="text-sm font-medium text-gray-800">{{ item.age }} tahun</p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Umur
+                  </p>
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ item.age }} Tahun
+                  </p>
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">Tanggal Periksa</p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Tanggal Periksa
+                  </p>
                   <p class="text-sm font-medium text-gray-800">
                     {{ item.date.split("T")[0].split("-").reverse().join("-") }}
                   </p>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">Dokter</p>
-                  <p class="text-sm font-medium text-gray-800">{{ item.doctor }}</p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Dokter
+                  </p>
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ item.doctor }}
+                  </p>
                 </div>
               </div>
 
               <div>
-                <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Keluhan</p>
+                <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                  Keluhan
+                </p>
                 <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
                   {{ item.complaint }}
                 </p>
@@ -226,7 +276,15 @@ onMounted(() => {
                   @click="generateSinglePDF(item)"
                   class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition-colors touch-feedback"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7,10 12,15 17,10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -243,47 +301,111 @@ onMounted(() => {
           <!-- Empty State for Mobile -->
           <div v-if="items.length === 0" class="text-center py-12">
             <div class="w-24 h-24 mx-auto mb-4 text-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
             </div>
-            <h3 class="text-lg font-medium text-gray-800 mb-2">Belum ada riwayat</h3>
-            <p class="text-gray-500">Riwayat pendaftaran Anda akan muncul di sini</p>
+            <h3 class="text-lg font-medium text-gray-800 mb-2">
+              Belum ada riwayat
+            </h3>
+            <p class="text-gray-500">
+              Riwayat pendaftaran Anda akan muncul di sini
+            </p>
           </div>
         </div>
 
         <!-- Desktop Table Layout (hidden on mobile) -->
-        <div class="hidden lg:block bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        <div
+          class="hidden lg:block bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+        >
           <div class="overflow-x-auto">
             <table class="w-full">
               <thead>
                 <tr class="bg-gray-50 border-b border-gray-200">
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">No</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Nama Lengkap</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">No. Telepon</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Umur</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Tanggal</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Dokter</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Keluhan</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Rekam Medis</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Status</th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    No
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Nama Lengkap
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    No. Telepon
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Umur
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Tanggal
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Dokter
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Keluhan
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Rekam Medis
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr 
-                  v-for="(item, index) in items" 
-                  :key="index" 
+                <tr
+                  v-for="(item, index) in items"
+                  :key="index"
                   class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                 >
-                  <td class="py-4 px-6 text-sm text-gray-700">{{ index + 1 + (currentPage - 1) * 10 }}</td>
-                  <td class="py-4 px-6 text-sm font-medium text-gray-800">{{ item.fullname }}</td>
-                  <td class="py-4 px-6 text-sm text-gray-700">{{ item.phone_number }}</td>
-                  <td class="py-4 px-6 text-sm text-gray-700 text-center">{{ item.age }}</td>
+                  <td class="py-4 px-6 text-sm text-gray-700">
+                    {{ index + 1 + (currentPage - 1) * 10 }}
+                  </td>
+                  <td class="py-4 px-6 text-sm font-medium text-gray-800">
+                    {{ item.fullname }}
+                  </td>
+                  <td class="py-4 px-6 text-sm text-gray-700">
+                    {{ item.phone_number }}
+                  </td>
+                  <td class="py-4 px-6 text-sm text-gray-700 text-center">
+                    {{ item.age }} Tahun
+                  </td>
                   <td class="py-4 px-6 text-sm text-gray-700">
                     {{ item.date.split("T")[0].split("-").reverse().join("-") }}
                   </td>
-                  <td class="py-4 px-6 text-sm text-gray-700">{{ item.doctor }}</td>
-                  <td class="py-4 px-6 text-sm text-gray-700 max-w-xs truncate">{{ item.complaint }}</td>
+                  <td class="py-4 px-6 text-sm text-gray-700">
+                    {{ item.doctor }}
+                  </td>
+                  <td class="py-4 px-6 text-sm text-gray-700 max-w-xs truncate">
+                    {{ item.complaint }}
+                  </td>
                   <td class="py-4 px-6 text-sm">
                     <button
                       v-if="item.rec_medic !== '-'"
@@ -310,19 +432,35 @@ onMounted(() => {
           <!-- Empty State for Desktop -->
           <div v-if="items.length === 0" class="text-center py-16">
             <div class="w-32 h-32 mx-auto mb-6 text-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
             </div>
-            <h3 class="text-xl font-medium text-gray-800 mb-3">Belum ada riwayat pendaftaran</h3>
+            <h3 class="text-xl font-medium text-gray-800 mb-3">
+              Belum ada riwayat pendaftaran
+            </h3>
             <p class="text-gray-500 max-w-md mx-auto">
-              Riwayat pendaftaran dan catatan medis Anda akan ditampilkan di sini setelah Anda melakukan pendaftaran.
+              Riwayat pendaftaran dan catatan medis Anda akan ditampilkan di
+              sini setelah Anda melakukan pendaftaran.
             </p>
           </div>
         </div>
 
         <!-- Pagination -->
-        <div v-if="totalPage > 1" class="flex justify-center items-center gap-2 mt-8 flex-wrap">
+        <div
+          v-if="totalPage > 1"
+          class="flex justify-center items-center gap-2 mt-8 flex-wrap"
+        >
           <button
             @click="fetchHistory(currentPage - 1, searchQuery)"
             :disabled="currentPage === 1"
@@ -333,13 +471,17 @@ onMounted(() => {
 
           <template v-for="page in totalPage" :key="page">
             <button
-              v-if="page === 1 || page === totalPage || (page >= currentPage - 1 && page <= currentPage + 1)"
+              v-if="
+                page === 1 ||
+                page === totalPage ||
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              "
               @click="fetchHistory(page, searchQuery)"
               :class="[
                 'px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-sm font-medium transition-colors',
                 page === currentPage
                   ? 'bg-[#C95792] text-white shadow-lg'
-                  : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                  : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50',
               ]"
             >
               {{ page }}
@@ -373,7 +515,7 @@ onMounted(() => {
 }
 
 .touch-feedback::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: currentColor;
@@ -407,8 +549,12 @@ onMounted(() => {
 
 /* Loading animation */
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin {

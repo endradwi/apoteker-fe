@@ -16,19 +16,23 @@ const modalOpenEditUser = ref(false);
 const selectedUser = ref<any | null>(null);
 const searchQuery = ref("");
 const isLoading = ref(false);
+const expandedRecMedic = ref<number | null>(null); // simpan ID pasien yang sedang dibuka
 
 const store = useUserStore();
 
-async function getAllPasien(page = 1, search = "") {
+async function getAllPasien(page = 1, search = "", sort = "DESC") {
   try {
     isLoading.value = true;
     currentPage.value = page;
-    const response = (await store.getAllReserve(page, search)) as any;
-    
+    const response = (await store.getAllReserve(page, search, sort)) as any;
+
     if (response && Array.isArray(response.results)) {
       console.log("Pasien data=", response.results);
       users.value = response.results.map((user: dataPasien) => {
-        const [year, month, day] = user.date.toString().split("T")[0].split("-");
+        const [year, month, day] = user.date
+          .toString()
+          .split("T")[0]
+          .split("-");
         return {
           ...user,
           date: `${day}-${month}-${year}`,
@@ -55,17 +59,17 @@ function EditClick(user: dataPasien) {
 }
 
 function getStatusColor(status: string) {
-  if (status === 'pending' || status === 'Pending') {
-    return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-  } else if (status === 'completed') {
-    return 'bg-green-100 text-green-800 border-green-200';
+  if (status === "pending" || status === "Pending") {
+    return "bg-yellow-100 text-yellow-800 border-yellow-200";
+  } else if (status === "completed") {
+    return "bg-green-100 text-green-800 border-green-200";
   } else {
-    return 'bg-red-100 text-red-800 border-red-200';
+    return "bg-red-100 text-red-800 border-red-200";
   }
 }
 
-function formatDate(dateString: string) {
-  return dateString.split("T")[0].split("-").reverse().join("-");
+function removeListTags(html: string) {
+  return html.replace(/<\/?(ul|ol|li)[^>]*>/gi, "");
 }
 
 onMounted(() => {
@@ -77,22 +81,25 @@ onMounted(() => {
   <div class="min-h-screen bg-gray-50">
     <!-- Mobile-first responsive container -->
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-      
       <!-- Header Section -->
       <div class="mb-6 lg:mb-8">
         <!-- Mobile menu spacing -->
         <div class="lg:hidden h-16"></div>
-        
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        >
           <div class="flex-1">
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-gray-800 mb-2">
+            <h1
+              class="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-gray-800 mb-2"
+            >
               Kelola Pasien
             </h1>
             <p class="text-sm sm:text-base text-gray-600">
               Manage patient registrations and medical records
             </p>
           </div>
-          
+
           <!-- Search Box -->
           <div class="relative w-full sm:w-auto sm:min-w-[300px]">
             <input
@@ -101,8 +108,18 @@ onMounted(() => {
               placeholder="Cari nama pasien..."
               class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C95792] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
             />
-            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <circle cx="11" cy="11" r="8"></circle>
                 <path d="m21 21-4.35-4.35"></path>
               </svg>
@@ -114,7 +131,9 @@ onMounted(() => {
       <!-- Loading State -->
       <div v-if="isLoading" class="flex items-center justify-center py-12">
         <div class="flex items-center gap-3">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C95792]"></div>
+          <div
+            class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C95792]"
+          ></div>
           <span class="text-gray-600">Memuat data pasien...</span>
         </div>
       </div>
@@ -150,37 +169,81 @@ onMounted(() => {
             <div class="space-y-3">
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">No. Telepon</p>
-                  <p class="text-sm font-medium text-gray-800">{{ user.phone_number }}</p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    No. Telepon
+                  </p>
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ user.phone_number }}
+                  </p>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">Umur</p>
-                  <p class="text-sm font-medium text-gray-800">{{ user.age }} tahun</p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Umur
+                  </p>
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ user.age }} tahun
+                  </p>
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">Tanggal Periksa</p>
-                  <p class="text-sm font-medium text-gray-800">{{ user.date }}</p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Tanggal Periksa
+                  </p>
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ user.date }}
+                  </p>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">Dokter</p>
-                  <p class="text-sm font-medium text-gray-800">{{ user.doctor }}</p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    Dokter
+                  </p>
+                  <p class="text-sm font-medium text-gray-800">
+                    {{ user.doctor }}
+                  </p>
                 </div>
               </div>
 
               <div>
-                <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Keluhan</p>
+                <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                  Keluhan
+                </p>
                 <p class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
                   {{ user.complaint }}
                 </p>
               </div>
 
               <div v-if="user.rec_medic && user.rec_medic !== '-'">
-                <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Catatan Medis</p>
-                <div class="text-sm text-gray-700 bg-blue-50 p-3 rounded-lg border border-blue-200">
-                  <div v-html="user.rec_medic"></div>
+                <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">
+                  Catatan Medis
+                </p>
+                <div
+                  class="text-sm text-gray-700 bg-blue-50 p-3 rounded-lg border border-blue-200"
+                >
+                  <div
+                    v-html="user.rec_medic"
+                    :class="[
+                      expandedRecMedic === user.id
+                        ? ''
+                        : 'line-clamp-3 overflow-hidden',
+                    ]"
+                  ></div>
+
+                  <button
+                    v-if="user.rec_medic.length > 100"
+                    @click="
+                      expandedRecMedic =
+                        expandedRecMedic === user.id ? null : user.id
+                    "
+                    class="text-blue-500 text-xs mt-2"
+                  >
+                    {{
+                      expandedRecMedic === user.id
+                        ? "Tutup"
+                        : "Lihat Selengkapnya"
+                    }}
+                  </button>
                 </div>
               </div>
 
@@ -190,9 +253,21 @@ onMounted(() => {
                   @click="EditClick(user)"
                   class="w-full flex items-center justify-center gap-2 bg-[#C95792] hover:bg-[#A64A7A] text-white px-4 py-3 rounded-lg font-medium transition-colors touch-feedback"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    ></path>
+                    <path
+                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                    ></path>
                   </svg>
                   <span>Edit Data Pasien</span>
                 </button>
@@ -203,48 +278,149 @@ onMounted(() => {
           <!-- Empty State for Mobile -->
           <div v-if="users.length === 0" class="text-center py-12">
             <div class="w-24 h-24 mx-auto mb-4 text-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
             </div>
-            <h3 class="text-lg font-medium text-gray-800 mb-2">Belum ada pendaftaran</h3>
-            <p class="text-gray-500">Data pendaftaran pasien akan muncul di sini</p>
+            <h3 class="text-lg font-medium text-gray-800 mb-2">
+              Belum ada pendaftaran
+            </h3>
+            <p class="text-gray-500">
+              Data pendaftaran pasien akan muncul di sini
+            </p>
           </div>
         </div>
 
         <!-- Desktop Table Layout (hidden on mobile) -->
-        <div class="hidden lg:block bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        <div
+          class="hidden lg:block bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+        >
           <div class="overflow-x-auto">
             <table class="w-full">
               <thead>
                 <tr class="bg-gray-50 border-b border-gray-200">
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">No</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Nama Lengkap</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">No. Telepon</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Umur</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Tanggal Periksa</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Dokter</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Catatan Medis</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Status</th>
-                  <th class="text-left py-4 px-6 font-semibold text-gray-800 text-sm">Action</th>
+                  <th
+                    class="text-left py-4 pl-6 font-semibold text-gray-800 text-sm"
+                  >
+                    No
+                  </th>
+                  <th
+                    class="text-left py-4 px-4 font-semibold text-gray-800 text-sm"
+                  >
+                    Nama Lengkap
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    No. Telepon
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Umur
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Tanggal Periksa
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Dokter
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Keluhan
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Catatan Medis
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="text-left py-4 px-6 font-semibold text-gray-800 text-sm"
+                  >
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr 
-                  v-for="(user, index) in users" 
+                <tr
+                  v-for="(user, index) in users"
                   :key="user.id"
                   class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                 >
-                  <td class="py-4 px-6 text-sm text-gray-700">{{ index + 1 + (currentPage - 1) * 10 }}</td>
-                  <td class="py-4 px-6 text-sm font-medium text-gray-800">{{ user.fullname }}</td>
-                  <td class="py-4 px-6 text-sm text-gray-700">{{ user.phone_number }}</td>
-                  <td class="py-4 px-6 text-sm text-gray-700 text-center">{{ user.age }}</td>
-                  <td class="py-4 px-6 text-sm text-gray-700">{{ user.date }}</td>
-                  <td class="py-4 px-6 text-sm text-gray-700">{{ user.doctor }}</td>
-                  <td class="py-4 px-6 text-sm text-gray-700 max-w-xs">
-                    <div v-if="user.rec_medic && user.rec_medic !== '-'" class="max-w-xs truncate">
-                      <div v-html="user.rec_medic"></div>
+                  <td class="py-4 px-6 text-sm text-gray-700">
+                    {{ index + 1 + (currentPage - 1) * 10 }}
+                  </td>
+                  <td class="py-4 px-6 text-sm font-medium text-gray-800">
+                    {{ user.fullname }}
+                  </td>
+                  <td class="py-4 px-6 text-sm text-gray-700">
+                    {{ user.phone_number }}
+                  </td>
+                  <td class="py-4 px-6 text-sm text-gray-700 text-center">
+                    {{ user.age }} Tahun
+                  </td>
+                  <td class="py-4 px-6 text-sm text-gray-700">
+                    {{ user.date }}
+                  </td>
+                  <td class="py-4 px-6 text-sm text-gray-700 truncate max-w-60">
+                    {{ user.doctor }}
+                  </td>
+                  <td class="py-4 px-6 text-sm text-gray-700">
+                    <div class="max-w-xs truncate">
+                      {{ user.complaint }}
                     </div>
+                  </td>
+
+                  <td class="py-4 px-6 text-sm text-gray-700 max-w-xs">
+                    <div
+                      v-if="user.rec_medic && user.rec_medic !== '-'"
+                      class="max-w-xs"
+                    >
+                      <div
+                        v-html="user.rec_medic"
+                        :class="[
+                          expandedRecMedic === user.id
+                            ? ''
+                            : 'line-clamp-3 overflow-hidden',
+                        ]"
+                      ></div>
+
+                      <button
+                        v-if="user.rec_medic.length > 100"
+                        @click="
+                          expandedRecMedic =
+                            expandedRecMedic === user.id ? null : user.id
+                        "
+                        class="text-blue-500 text-xs mt-1"
+                      >
+                        {{
+                          expandedRecMedic === user.id
+                            ? "Tutup"
+                            : "Lihat Selengkapnya"
+                        }}
+                      </button>
+                    </div>
+
                     <span v-else class="text-gray-400">-</span>
                   </td>
                   <td class="py-4 px-6 text-sm">
@@ -271,19 +447,35 @@ onMounted(() => {
           <!-- Empty State for Desktop -->
           <div v-if="users.length === 0" class="text-center py-16">
             <div class="w-32 h-32 mx-auto mb-6 text-gray-300">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
             </div>
-            <h3 class="text-xl font-medium text-gray-800 mb-3">Belum ada pendaftaran pasien</h3>
+            <h3 class="text-xl font-medium text-gray-800 mb-3">
+              Belum ada pendaftaran pasien
+            </h3>
             <p class="text-gray-500 max-w-md mx-auto">
-              Data pendaftaran pasien akan ditampilkan di sini setelah ada yang mendaftar.
+              Data pendaftaran pasien akan ditampilkan di sini setelah ada yang
+              mendaftar.
             </p>
           </div>
         </div>
 
         <!-- Pagination -->
-        <div v-if="totalPage > 1" class="flex justify-center items-center gap-2 mt-8 flex-wrap">
+        <div
+          v-if="totalPage > 1"
+          class="flex justify-center items-center gap-2 mt-8 flex-wrap"
+        >
           <button
             @click="getAllPasien(currentPage - 1, searchQuery)"
             :disabled="currentPage === 1"
@@ -294,13 +486,17 @@ onMounted(() => {
 
           <template v-for="page in totalPage" :key="page">
             <button
-              v-if="page === 1 || page === totalPage || (page >= currentPage - 1 && page <= currentPage + 1)"
+              v-if="
+                page === 1 ||
+                page === totalPage ||
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              "
               @click="getAllPasien(page, searchQuery)"
               :class="[
                 'px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-sm font-medium transition-colors',
                 page === currentPage
                   ? 'bg-[#C95792] text-white shadow-lg'
-                  : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                  : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50',
               ]"
             >
               {{ page }}
@@ -343,7 +539,7 @@ onMounted(() => {
 }
 
 .touch-feedback::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: currentColor;
@@ -358,8 +554,12 @@ onMounted(() => {
 
 /* Loading animation */
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin {
@@ -386,12 +586,9 @@ onMounted(() => {
 }
 
 /* Medical record content styling */
-:deep(ol), :deep(ul) {
-  @apply list-disc pl-4 mb-2 text-sm;
-}
-
-:deep(ol) {
-  @apply list-decimal;
+:deep(ol),
+:deep(ul) {
+  @apply pl-4 mb-2 text-sm list-disc;
 }
 
 :deep(li) {

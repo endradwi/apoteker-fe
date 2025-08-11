@@ -62,13 +62,13 @@ export const useUserStore = defineStore("user", {
         return data;
       } catch (error: any) {
         console.error("❌ Failed to fetch profile:", error);
-        
+
         // If unauthorized, clear token
         if (error?.response?.status === 401) {
           console.warn("⚠️ Profile request unauthorized, clearing token");
           credentialsStore.clearToken();
         }
-        
+
         return null;
       }
     },
@@ -113,18 +113,14 @@ export const useUserStore = defineStore("user", {
     ) {
       const { post } = useHttp();
       try {
-        const data = await post(
-          "reserve",
-          {
-            fullname,
-            phone_number,
-            age,
-            date,
-            doctor,
-            complaint,
-          },
-      
-        );
+        const data = await post("reserve", {
+          fullname,
+          phone_number,
+          age,
+          date,
+          doctor,
+          complaint,
+        });
         this.user = data; // simpan ke state jika perlu
         return data;
       } catch (error) {
@@ -168,8 +164,8 @@ export const useUserStore = defineStore("user", {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
-        const data = await get("reserve/all/reserve/users",{
-          query: {page, search}
+        const data = await get("reserve/all/reserve/users", {
+          query: { page, search },
         });
 
         this.user = data; // simpan ke state jika perlu
@@ -191,12 +187,12 @@ export const useUserStore = defineStore("user", {
         return { success, message };
       }
     },
-    async getAllReserve(page = 1, search: string = "") {
+    async getAllReserve(page = 1, search: string = "", sort = "DESC") {
       const { get } = useHttp(); // asumsi pakai GET, bisa juga POST jika backend-nya seperti itu
 
       try {
-        const data = await get("reserve/all/reserve/admin",{
-          query: { page, search },
+        const data = await get("reserve/all/reserve/admin", {
+          query: { page, search, sort },
         });
 
         this.user = data; // simpan ke state jika perlu
@@ -218,11 +214,7 @@ export const useUserStore = defineStore("user", {
         return null;
       }
     },
-    async patchPasienData(
-      rec_medic: string,
-      status: string,
-      id: number
-    ) {
+    async patchPasienData(rec_medic: string, status: string, id: number) {
       const { patch } = useHttp();
       const formData = new FormData();
 
@@ -230,7 +222,7 @@ export const useUserStore = defineStore("user", {
       formData.append("status", status);
 
       try {
-        const data = await patch(`reserve/${id}`, formData,{
+        const data = await patch(`reserve/${id}`, formData, {
           // ❌ Jangan set Content-Type secara manual! Biarkan browser handle.
         });
 

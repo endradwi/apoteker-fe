@@ -149,6 +149,10 @@ async function reserve() {
       showConfirmButton: true,
       confirmButtonColor: "#C95792",
       timerProgressBar: true,
+    }).then(() => {
+      if (response?.success) {
+        useRouter().push("/history");
+      }
     });
 
     if (response?.success) {
@@ -300,7 +304,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Age Field -->
-            <div class="space-y-2">
+            <div class="space-y-2 relative">
               <label
                 for="age"
                 class="block text-sm font-semibold text-gray-700"
@@ -311,7 +315,7 @@ onBeforeUnmount(() => {
                 type="text"
                 v-model="age"
                 id="age"
-                placeholder="Masukan umur dalam tahun"
+                placeholder="Masukan umur dengan angka saja"
                 min="1"
                 max="120"
                 :class="[
@@ -322,6 +326,7 @@ onBeforeUnmount(() => {
                 ]"
                 :style="{ fontSize: '16px' }"
               />
+              <p class="absolute top-10 left-96">Tahun</p>
               <p v-if="errors.age" class="text-red-500 text-sm font-medium">
                 {{ errors.age }}
               </p>
